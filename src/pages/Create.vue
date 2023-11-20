@@ -5,57 +5,75 @@
             @submit.prevent="submitForm">
             <div class="w-full flex">
                 <div class="w-1/2 mr-4">
-                    <div ref="dropArea"
-                        class="border-2 border-dashed border-accent p-8 w-64 text-center cursor-pointer relative"
-                        @dragover.prevent @dragenter="addDragOverClass" @dragleave="removeDragOverClass" @drop="handleDrop">
-                        <span class="block mb-4">Arraste e solte ou clique para escolher uma imagem</span>
-                        <button @click="openFileInput" class="btn btn-primary w-full">Escolher Arquivo</button>
-                        <button @click="openCamera" class="btn btn-secondary w-full mt-2">Abrir Câmera</button>
+                    <div class="flex w-full h-2/5">
 
-                        <!-- Exibir a imagem da câmera ou arquivo selecionado -->
-                        <div v-if="isCameraActive || selectedImage" class="absolute top-0 left-0 w-full h-full">
-                            <img v-if="selectedImage" :src="selectedImage" alt="Imagem Selecionada"
-                                class="w-full h-full object-cover" />
-                            <video v-if="isCameraActive" ref="cameraFeed" width="100%" height="100%" autoplay></video>
-                            <Button @click="captureFromCamera, clearSelection" v-if="isCameraActive">Capturar</Button>
+                        <div ref="dropArea"
+                            class="border-2 border-dashed border-accent p-8 mr-4 w-64 text-center cursor-pointer relative"
+                            @dragover.prevent @dragenter="addDragOverClass" @dragleave="removeDragOverClass"
+                            @drop="handleDrop">
+                            <span class="block mb-4">Arraste e solte ou:</span>
+                            <button @click="openFileInput" class="btn btn-primary w-full">Escolher Arquivo</button>
+                            <button @click="openCamera" class="btn btn-secondary w-full mt-2">Abrir Câmera</button>
+
+                            <!-- Exibir a imagem da câmera ou arquivo selecionado -->
+                            <div v-if="isCameraActive || selectedImage" class="absolute top-0 left-0 w-full h-full">
+                                <img v-if="selectedImage" :src="selectedImage" alt="Imagem Selecionada"
+                                    class="w-full h-full object-cover" />
+                                <video v-if="isCameraActive" ref="cameraFeed" width="100%" height="100%" autoplay></video>
+                                <Button @click="captureFromCamera, clearSelection" v-if="isCameraActive">Capturar</Button>
+                            </div>
+                            <input type="hidden" name="imagem" :value="selectedImage" />
                         </div>
-                        <input type="hidden" name="imagem" :value="selectedImage" />
-                    </div>
 
-                    <div>
-                        <label class="label">
-                            <span class="label-text">Nome</span>
-                        </label>
-                        <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.nome" required />
+                        <div class="w-full h-full flex flex-col justify-end">
+                            <div>
+                                <label class="label">
+                                    <span class="label-text">Nome</span>
+                                </label>
+                                <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.nome"
+                                    required />
+                            </div>
+                            <div class="flex w-full">
+                                <div class="w-full mr-4">
+                                    <label class="label">
+                                        <span class="label-text">Estado Civil</span>
+                                    </label>
+                                    <select class="select select-bordered w-full  rounded-xl" type="text"
+                                        v-model="form.estadoCivil" required>
+                                        <option value="opcion1">solteiro</option>
+                                        <option value="opcion2">casado</option>
+                                        <option value="opcion3">divorciado</option>
+                                        <option value="opcion4">viúvo</option>
+
+                                    </select>
+                                </div>
+
+                                <div class="w-full">
+                                    <label class="label">
+                                        <span class="label-text">Profissão</span>
+                                    </label>
+                                    <input class="input input-bordered w-full  rounded-xl" type="text"
+                                        v-model="form.profissao" required />
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                    <div class="flex w-full">
+                    <div class="w-full flex">
                         <div class="w-full mr-4">
                             <label class="label">
-                                <span class="label-text">Estado Civil</span>
+                                <span class="label-text">Filiação</span>
                             </label>
-                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.estadoCivil"
-                                required>
-                                <option value="opcion1">Opción 1</option>
-                                <option value="opcion2">Opción 2</option>
-                                <option value="opcion3">Opción 3</option>
-                            </select>
-                        </div>
-
-                        <div class="w-full">
-                            <label class="label">
-                                <span class="label-text">Profissão</span>
-                            </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.profissao"
+                            <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.dataNascimento"
                                 required />
                         </div>
-                    </div>
-
-                    <div>
-                        <label class="label">
-                            <span class="label-text">Filiação</span>
-                        </label>
-                        <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.filiacao"
-                            required />
+                        <div class="w-full">
+                            <label class="label">
+                                <span class="label-text">Data de Nascimento</span>
+                            </label>
+                            <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.dataNascimento"
+                                required />
+                        </div>
                     </div>
 
                     <div class="flex w-full">
@@ -64,7 +82,7 @@
                             <StateSelect v-model="selectedState" />
 
                             <label class="label">
-                                <span class="label-text">Município</span>
+                                <span class="label-text">Naturalidade</span>
                             </label>
                             <div v-if="isBrazil">
                                 <!-- Municipality select component for Brazil -->
@@ -112,17 +130,6 @@
                             </select>
                         </div>
                     </div>
-                </div>
-
-                <div class="w-1/2 ml-4">
-
-                    <div>
-                        <label class="label">
-                            <span class="label-text">Data de Nascimento</span>
-                        </label>
-                        <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.dataNascimento"
-                            required />
-                    </div>
 
                     <div class="flex w-full">
                         <div class="w-full mr-4">
@@ -141,6 +148,9 @@
                                 required />
                         </div>
                     </div>
+                </div>
+
+                <div class="w-1/2 ml-4">
 
                     <div class="flex w-full">
                         <div class="w-full mr-4">
@@ -197,20 +207,63 @@
 
                     <div class="flex w-full">
                         <div class="w-full mr-4">
-                            <label class="label">
-                                <span class="label-text">CPF</span>
-                            </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.cpf"
-                                required />
+                            <label class="label" for="cpf">CPF</label>
+                            <input class="input input-bordered w-full  rounded-xl" v-model="form.cpf" @input="formatarCPF"
+                                id="cpf" name="cpf" maxlength="14">
+                            <span style="color: red;">{{ cpfError }}</span>
                         </div>
 
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">RG</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.rg" required />
+                            <input maxlength="12" @input="formatarRG" class="input input-bordered w-full  rounded-xl"
+                                type="text" v-model="form.rg" required />
                         </div>
                     </div>
+
+                    <h1 class="text-2xl mt-8 mb-8">Dependentes:</h1>
+
+                    <div class="flex w-full">
+                        <div class="w-full mr-4">
+                            <label class="label" for="minorChildren">Filhos menores de 18 anos</label>
+                            <input class="input input-bordered w-full rounded-xl" type="number" v-model="form.minorChildren"
+                                id="minorChildren" name="minorChildren">
+                        </div>
+
+                        <div class="w-full mr-4">
+                            <label class="label">
+                                <span class="label-text">Sexo Masculino</span>
+                            </label>
+                            <input class="input input-bordered w-full rounded-xl" type="number" v-model="form.maleChildren"
+                                required />
+                        </div>
+
+                        <div class="w-full">
+                            <label class="label">
+                                <span class="label-text">Sexo Feminino</span>
+                            </label>
+                            <input class="input input-bordered w-full  rounded-xl" type="number"
+                                v-model="form.femaleChildren" required />
+                        </div>
+                    </div>
+                    <div class="flex w-full">
+                        <div class="w-full mr-4">
+                            <label class="label" for="minorChildren">Outros dependentes</label>
+                            <input class="input input-bordered w-full rounded-xl" type="number" v-model="form.minorChildren"
+                                id="minorChildren" name="minorChildren">
+                        </div>
+
+                        <div class="w-full mr-4">
+                            <label class="label">
+                                <span class="label-text">Celular</span>
+                            </label>
+                            <input class="input input-bordered w-full rounded-xl" type="text" v-model="form.number"
+                                @input="validatePhone" required />
+                            <span v-if="phoneError" class="text-xs text-red-500">{{ phoneError }}</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -246,6 +299,16 @@ export default {
                 dataNascimento: '',
                 residencia: '',
                 localTrabalho: '',
+                carteiraProfissional: '',
+                serie: '',
+                sabeLer: '',
+                eleitor: '',
+                carteiraSindical: '',
+                cpf: '',
+                rg: '',
+                minorChildren: '',
+                maleChildren: '',
+                femaleChildren: '',
             },
         };
     },
@@ -290,6 +353,75 @@ export default {
         selectedCountry: 'resetStateAndMunicipality',
     },
     methods: {
+        
+        formatarRG() {
+            // Remover caracteres não numéricos
+            this.form.rg = this.form.rg.replace(/\D/g, '');
+
+            // Adicionar pontos e traço conforme o formato do RG
+            if (this.form.rg.length > 1 && this.form.rg.length <= 8) {
+                this.form.rg = this.form.rg.replace(/(\d{2})(\d{3})(\d{3})/, '$1.$2.$3');
+            } else if (this.form.rg.length > 8) {
+                this.form.rg = this.form.rg.replace(/(\d{2})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+            }
+
+            this.validarRG();
+        },
+        formatarCPF() {
+            // Remover caracteres não numéricos
+            this.form.cpf = this.form.cpf.replace(/\D/g, '');
+
+            if (this.form.cpf.length > 3 && this.form.cpf.length <= 6) {
+                this.form.cpf = this.form.cpf.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+            } else if (this.form.cpf.length > 6 && this.form.cpf.length <= 9) {
+                this.form.cpf = this.form.cpf.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+            } else if (this.form.cpf.length > 9) {
+                this.form.cpf = this.form.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+            }
+
+            this.validarCPF();
+        },
+        validarCPF() {
+            let cpf = this.form.cpf.replace(/\D/g, ''); // Remover não dígitos
+
+            if (cpf.length !== 11 || !/^\d{11}$/.test(cpf)) {
+                this.cpfError = 'CPF inválido';
+                return;
+            }
+
+            // Validar CPF usando o algoritmo
+            let sum = 0;
+            for (let i = 0; i < 9; i++) {
+                sum += parseInt(cpf.charAt(i)) * (10 - i);
+            }
+
+            let remainder = 11 - (sum % 11);
+            if (remainder === 10 || remainder === 11) {
+                remainder = 0;
+            }
+
+            if (remainder !== parseInt(cpf.charAt(9))) {
+                this.cpfError = 'CPF inválido';
+                return;
+            }
+
+            sum = 0;
+            for (let i = 0; i < 10; i++) {
+                sum += parseInt(cpf.charAt(i)) * (11 - i);
+            }
+
+            remainder = 11 - (sum % 11);
+            if (remainder === 10 || remainder === 11) {
+                remainder = 0;
+            }
+
+            if (remainder !== parseInt(cpf.charAt(10))) {
+                this.cpfError = 'CPF inválido';
+                return;
+            }
+
+            this.cpfError = ''; // Se chegou aqui, o CPF é válido
+        },
         async fetchCountries() {
             try {
                 const response = await axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/paises');
@@ -405,6 +537,7 @@ export default {
         validarCampo() {
             this.form.nome = this.form.nome.replace(/[^a-zA-ZÀ-ÿ ]/g, '');
             this.form.filiacao = this.form.filiacao.replace(/[^a-zA-ZÀ-ÿ ]/g, '');
+            this.form.cpf = this.form.cpf.replace(/\D/g, '');
         },
     },
 };
