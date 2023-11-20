@@ -1,7 +1,8 @@
 <template>
     <div class="w-full ">
         <h1 class="ml-40 mt-12 mb-12 text-5xl">Cadastrar novo associado</h1>
-        <form class="w-3/4  mx-auto  border-2 border-secondary rounded-2xl p-8" @submit.prevent="submitForm">
+        <form @keydown="validarCampo" class="w-3/4  mx-auto  border-2 border-secondary rounded-2xl p-8"
+            @submit.prevent="submitForm">
             <div class="w-full flex">
                 <div class="w-1/2 mr-4">
                     <div ref="dropArea"
@@ -32,8 +33,12 @@
                             <label class="label">
                                 <span class="label-text">Estado Civil</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.estadoCivil"
-                                required />
+                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.estadoCivil"
+                                required>
+                                <option value="opcion1">Opción 1</option>
+                                <option value="opcion2">Opción 2</option>
+                                <option value="opcion3">Opción 3</option>
+                            </select>
                         </div>
 
                         <div class="w-full">
@@ -55,19 +60,56 @@
 
                     <div class="flex w-full">
                         <div class="w-full mr-4">
+                            <!-- State select component -->
+                            <StateSelect v-model="selectedState" />
+
                             <label class="label">
-                                <span class="label-text">Naturalidade</span>
+                                <span class="label-text">Município</span>
                             </label>
-                            <input class="input input-bordered w-full rounded-xl mr-2" type="text"
-                                v-model="form.naturalidade" required />
+                            <div v-if="isBrazil">
+                                <!-- Municipality select component for Brazil -->
+                                <select class="select select-bordered w-full rounded-xl" v-model="selectedMunicipality"
+                                    required>
+                                    <option v-for="municipality in municipalities" :key="municipality.id"
+                                        :value="municipality.nome">
+                                        {{ municipality.nome }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div v-else>
+                                <!-- Municipality input component for other countries -->
+                                <input class="input input-bordered w-full rounded-xl" v-model="selectedMunicipality"
+                                    type="text" required />
+                            </div>
+                        </div>
+
+                        <div class="w-48 mr-4">
+                            <label class="label">
+                                <span class="label-text">Estado</span>
+                            </label>
+                            <div v-if="isBrazil">
+                                <!-- State select component for Brazil -->
+                                <select class="select select-bordered w-full rounded-xl" v-model="selectedState" required>
+                                    <option v-for="state in states" :key="state.id" :value="state.sigla">{{ state.sigla }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div v-else>
+                                <!-- State input component for other countries -->
+                                <input class="input input-bordered w-full rounded-xl" v-model="selectedState" type="text"
+                                    required />
+                            </div>
+
                         </div>
 
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">Nacionalidade</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.nacionalidade"
-                                required />
+                            <select class="select select-bordered w-full rounded-xl" v-model="selectedCountry" required>
+                                <option v-for="country in countries" :key="country.id" :value="country.nome">{{ country.nome
+                                }}</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -87,7 +129,7 @@
                             <label class="label">
                                 <span class="label-text">Residencia</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.estadoCivil"
+                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.residencia"
                                 required />
                         </div>
 
@@ -95,7 +137,7 @@
                             <label class="label">
                                 <span class="label-text">Local onde Trabalha</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.profissao"
+                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.localtrabalho"
                                 required />
                         </div>
                     </div>
@@ -105,16 +147,20 @@
                             <label class="label">
                                 <span class="label-text">Carteira Profissional</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.estadoCivil"
-                                required />
+                            <input class="input input-bordered w-full  rounded-xl" type="text"
+                                v-model="form.carteiraprofissional" required />
                         </div>
 
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">Série</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.profissao"
-                                required />
+                            <select class="select select-bordered w-full  rounded-xl" type="select" v-model="form.serie"
+                                required>
+                                <option value="opcion1">Opción 1</option>
+                                <option value="opcion2">Opción 2</option>
+                                <option value="opcion3">Opción 3</option>
+                            </select>
                         </div>
                     </div>
 
@@ -123,24 +169,30 @@
                             <label class="label">
                                 <span class="label-text">Sabe ler</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.sabeler"
-                                required />
+                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.sabeler"
+                                required>
+                                <option value="opcion1">Sim</option>
+                                <option value="opcion2">Não</option>
+                            </select>
                         </div>
 
                         <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">É Eleitor</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.eleitor"
-                                required />
+                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.eleitor"
+                                required>
+                                <option value="opcion1">Sim</option>
+                                <option value="opcion2">Não</option>
+                            </select>
                         </div>
                         <div class="w-full">
-                        <label class="label">
-                            <span class="label-text">Carteira Sindical</span>
-                        </label>
-                        <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.eleitor"
-                            required />
-                    </div>
+                            <label class="label">
+                                <span class="label-text">Carteira Sindical</span>
+                            </label>
+                            <input class="input input-bordered w-full  rounded-xl" type="text"
+                                v-model="form.carteirasindical" required />
+                        </div>
                     </div>
 
                     <div class="flex w-full">
@@ -148,7 +200,7 @@
                             <label class="label">
                                 <span class="label-text">CPF</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.sabeler"
+                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.cpf"
                                 required />
                         </div>
 
@@ -156,26 +208,32 @@
                             <label class="label">
                                 <span class="label-text">RG</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.eleitor"
-                                required />
+                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.rg" required />
                         </div>
                     </div>
                 </div>
             </div>
 
-            <Butoon type="submit" class="btn btn-primary mt-8">Salvar</Butoon>
+            <Butoon type="submit" @click="validarCampo" class="btn btn-primary mt-8">Salvar</Butoon>
         </form>
 
     </div>
 </template>
   
 <script>
+import axios from 'axios';
 import Button from '../components/Button.vue';
 import { ref } from 'vue';
 
 export default {
     data() {
         return {
+            municipalities: [],
+            selectedMunicipality: 'Brumado',
+            states: [],
+            selectedState: 'BA',
+            countries: [],
+            selectedCountry: 'Brasil',
             selectedImage: null,
             isCameraActive: false,
             form: {
@@ -190,6 +248,17 @@ export default {
                 localTrabalho: '',
             },
         };
+    },
+    mounted() {
+        this.fetchCountries();
+        this.fetchStates();
+        this.fetchMunicipalities();
+    },
+    computed: {
+        isBrazil() {
+            // Check if the selected country is Brazil
+            return this.selectedCountry === 'Brasil';
+        },
     },
     setup() {
         const camera = ref(null);
@@ -216,7 +285,57 @@ export default {
             submitForm,
         };
     },
+    watch: {
+        selectedState: 'fetchMunicipalities',
+        selectedCountry: 'resetStateAndMunicipality',
+    },
     methods: {
+        async fetchCountries() {
+            try {
+                const response = await axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/paises');
+                this.countries = response.data.map(country => ({
+                    id: country.id,
+                    nome: country.nome,
+                }));
+            } catch (error) {
+                console.error('Error fetching countries:', error);
+            }
+        },
+        async fetchStates() {
+            try {
+                const response = await axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados');
+                this.states = response.data.map(state => ({
+                    id: state.id,
+                    nome: state.nome,
+                    sigla: state.sigla,
+                }));
+            } catch (error) {
+                console.error('Error fetching states:', error);
+            }
+        },
+        async fetchMunicipalities() {
+            try {
+                const response = await axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${this.selectedState}/municipios`);
+                this.municipalities = response.data.map(municipality => ({
+                    id: municipality.id,
+                    nome: municipality.nome,
+                }));
+            } catch (error) {
+                console.error('Error fetching municipalities:', error);
+            }
+        },
+        resetStateAndMunicipality() {
+            // Reset state and municipality when the selected country changes
+            this.selectedState = '';
+            this.selectedMunicipality = null;
+        },
+        onCountryChange() {
+            // Fetch states and municipalities based on the selected country
+            if (this.isBrazil) {
+                this.fetchStates();
+                this.fetchMunicipalities();
+            }
+        },
         addDragOverClass() {
             this.$refs.dropArea.classList.add('drag-over');
         },
@@ -275,6 +394,17 @@ export default {
 
             // Desligue a câmera após a captura
             this.isCameraActive = false;
+        },
+        handleImage(file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                this.selectedImage = reader.result;
+            };
+        },
+        validarCampo() {
+            this.form.nome = this.form.nome.replace(/[^a-zA-ZÀ-ÿ ]/g, '');
+            this.form.filiacao = this.form.filiacao.replace(/[^a-zA-ZÀ-ÿ ]/g, '');
         },
     },
 };
