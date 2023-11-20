@@ -81,7 +81,7 @@
                             <span class="label-text">Data de Nascimento</span>
                         </label>
                         <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.birthAt"
-                            required />
+                            @input="formatDate" required />
                     </div>
 
                     <div class="flex w-full">
@@ -401,25 +401,35 @@ export default {
                     console.error('Erro ao enviar a solicitação:', error);
                 });
         },
+        formatDate(event) {
+            // Obtém o valor da entrada de data
+            const inputValue = event.target.value;
+
+            // Converte a data para o formato desejado (YYYY-MM-DD)
+            const formattedDate = new Date(inputValue).toISOString().split('T')[0];
+
+            // Atualiza o campo 'birthAt' no objeto 'form' com a data formatada
+            this.form.birthAt = formattedDate;
+        },
         formatPhone() {
-    // Remove caracteres não numéricos do número de celular
-    let phoneNumber = this.form.phone.replace(/\D/g, '');
+            // Remove caracteres não numéricos do número de celular
+            let phoneNumber = this.form.phone.replace(/\D/g, '');
 
-    // Garante que o número não tenha mais do que 11 dígitos
-    if (phoneNumber.length > 11) {
-      phoneNumber = phoneNumber.slice(0, 11);
-    }
+            // Garante que o número não tenha mais do que 11 dígitos
+            if (phoneNumber.length > 11) {
+                phoneNumber = phoneNumber.slice(0, 11);
+            }
 
-    // Formata o número no padrão brasileiro XX XXXXX-XXXX ou XX XXXX-XXXX
-    if (phoneNumber.length >= 7) {
-      phoneNumber = `${phoneNumber.substring(0, 2)} ${phoneNumber.substring(2, 7)}-${phoneNumber.substring(7)}`;
-    } else {
-      phoneNumber = `${phoneNumber.substring(0, 2)} ${phoneNumber.substring(2)}`;
-    }
+            // Formata o número no padrão brasileiro XX XXXXX-XXXX ou XX XXXX-XXXX
+            if (phoneNumber.length >= 7) {
+                phoneNumber = `${phoneNumber.substring(0, 2)} ${phoneNumber.substring(2, 7)}-${phoneNumber.substring(7)}`;
+            } else {
+                phoneNumber = `${phoneNumber.substring(0, 2)} ${phoneNumber.substring(2)}`;
+            }
 
-    // Atualiza o campo 'phone' no objeto 'form' com o número formatado
-    this.form.phone = phoneNumber;
-  },
+            // Atualiza o campo 'phone' no objeto 'form' com o número formatado
+            this.form.phone = phoneNumber;
+        },
         formatarRG() {
             // Remover caracteres não numéricos
             this.form.rg = this.form.rg.replace(/\D/g, '');
