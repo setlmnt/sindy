@@ -8,10 +8,10 @@
                     <div class="flex w-full h-2/5">
 
                         <div ref="dropArea"
-                            class="border-2 border-dashed border-accent p-8 mr-4 w-64 text-center cursor-pointer relative"
+                            class="border-2 border-dashed border-accent p-4 mr-4 w-64 text-center cursor-pointer relative"
                             @dragover.prevent @dragenter="addDragOverClass" @dragleave="removeDragOverClass"
                             @drop="handleDrop">
-                            <span class="block mb-4">Arraste e solte ou:</span>
+                            <span class="block mb-4 text-lg">Arraste e solte ou:</span>
                             <button @click="openFileInput" class="btn btn-primary w-full">Escolher Arquivo</button>
                             <button @click="openCamera" class="btn btn-secondary w-full mt-2">Abrir Câmera</button>
 
@@ -30,7 +30,7 @@
                                 <label class="label">
                                     <span class="label-text">Nome</span>
                                 </label>
-                                <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.nome"
+                                <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.name"
                                     required />
                             </div>
                             <div class="flex w-full">
@@ -39,7 +39,7 @@
                                         <span class="label-text">Estado Civil</span>
                                     </label>
                                     <select class="select select-bordered w-full  rounded-xl" type="text"
-                                        v-model="form.estadoCivil" required>
+                                        v-model="form.maritalStatus" required>
                                         <option value="opcion1">solteiro</option>
                                         <option value="opcion2">casado</option>
                                         <option value="opcion3">divorciado</option>
@@ -53,7 +53,7 @@
                                         <span class="label-text">Profissão</span>
                                     </label>
                                     <input class="input input-bordered w-full  rounded-xl" type="text"
-                                        v-model="form.profissao" required />
+                                        v-model="form.profession" required />
                                 </div>
                             </div>
 
@@ -62,18 +62,26 @@
                     <div class="w-full flex">
                         <div class="w-full mr-4">
                             <label class="label">
-                                <span class="label-text">Filiação</span>
+                                <span class="label-text">Mãe</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.dataNascimento"
-                                required />
+                            <input class="input input-bordered w-full  rounded-xl" type="text"
+                                v-model="form.affiliation.motherName" required />
                         </div>
                         <div class="w-full">
                             <label class="label">
-                                <span class="label-text">Data de Nascimento</span>
+                                <span class="label-text">Pai</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.dataNascimento"
-                                required />
+                            <input class="input input-bordered w-full  rounded-xl" type="text"
+                                v-model="form.affiliation.fatherName" required />
                         </div>
+                    </div>
+
+                    <div class="w-full">
+                        <label class="label">
+                            <span class="label-text">Data de Nascimento</span>
+                        </label>
+                        <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.birthAt"
+                            required />
                     </div>
 
                     <div class="flex w-full">
@@ -86,7 +94,7 @@
                             </label>
                             <div v-if="isBrazil">
                                 <!-- Municipality select component for Brazil -->
-                                <select class="select select-bordered w-full rounded-xl" v-model="selectedMunicipality"
+                                <select class="select select-bordered w-full rounded-xl" v-model="form.address.city"
                                     required>
                                     <option v-for="municipality in municipalities" :key="municipality.id"
                                         :value="municipality.nome">
@@ -96,7 +104,7 @@
                             </div>
                             <div v-else>
                                 <!-- Municipality input component for other countries -->
-                                <input class="input input-bordered w-full rounded-xl" v-model="selectedMunicipality"
+                                <input class="input input-bordered w-full rounded-xl" v-model="form.address.city"
                                     type="text" required />
                             </div>
                         </div>
@@ -124,7 +132,7 @@
                             <label class="label">
                                 <span class="label-text">Nacionalidade</span>
                             </label>
-                            <select class="select select-bordered w-full rounded-xl" v-model="selectedCountry" required>
+                            <select class="select select-bordered w-full rounded-xl" v-model="form.nationality" required>
                                 <option v-for="country in countries" :key="country.id" :value="country.nome">{{ country.nome
                                 }}</option>
                             </select>
@@ -158,19 +166,15 @@
                                 <span class="label-text">Carteira Profissional</span>
                             </label>
                             <input class="input input-bordered w-full  rounded-xl" type="text"
-                                v-model="form.carteiraprofissional" required />
+                                v-model="form.workRecord.number" required />
                         </div>
 
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">Série</span>
                             </label>
-                            <select class="select select-bordered w-full  rounded-xl" type="select" v-model="form.serie"
-                                required>
-                                <option value="opcion1">Opción 1</option>
-                                <option value="opcion2">Opción 2</option>
-                                <option value="opcion3">Opción 3</option>
-                            </select>
+                            <input class="input input-bordered w-full  rounded-xl" type="select"
+                                v-model="form.workRecord.series" required>
                         </div>
                     </div>
 
@@ -179,10 +183,10 @@
                             <label class="label">
                                 <span class="label-text">Sabe ler</span>
                             </label>
-                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.sabeler"
+                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.literate"
                                 required>
-                                <option value="opcion1">Sim</option>
-                                <option value="opcion2">Não</option>
+                                <option value="true">Sim</option>
+                                <option value="false">Não</option>
                             </select>
                         </div>
 
@@ -190,18 +194,18 @@
                             <label class="label">
                                 <span class="label-text">É Eleitor</span>
                             </label>
-                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.eleitor"
+                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.voter"
                                 required>
-                                <option value="opcion1">Sim</option>
-                                <option value="opcion2">Não</option>
+                                <option value="true">Sim</option>
+                                <option value="false">Não</option>
                             </select>
                         </div>
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">Carteira Sindical</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text"
-                                v-model="form.carteirasindical" required />
+                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.unionCard"
+                                required />
                         </div>
                     </div>
 
@@ -227,16 +231,16 @@
                     <div class="flex w-full">
                         <div class="w-full mr-4">
                             <label class="label" for="minorChildren">Filhos menores de 18 anos</label>
-                            <input class="input input-bordered w-full rounded-xl" type="number" v-model="form.minorChildren"
-                                id="minorChildren" name="minorChildren">
+                            <input class="input input-bordered w-full rounded-xl" type="number"
+                                v-model="form.dependents.minorChildren" id="minorChildren" name="minorChildren">
                         </div>
 
                         <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">Sexo Masculino</span>
                             </label>
-                            <input class="input input-bordered w-full rounded-xl" type="number" v-model="form.maleChildren"
-                                required />
+                            <input class="input input-bordered w-full rounded-xl" type="number"
+                                v-model="form.dependents.maleChildren" required />
                         </div>
 
                         <div class="w-full">
@@ -244,22 +248,22 @@
                                 <span class="label-text">Sexo Feminino</span>
                             </label>
                             <input class="input input-bordered w-full  rounded-xl" type="number"
-                                v-model="form.femaleChildren" required />
+                                v-model="form.dependents.femaleChildren" required />
                         </div>
                     </div>
                     <div class="flex w-full">
                         <div class="w-full mr-4">
                             <label class="label" for="minorChildren">Outros dependentes</label>
-                            <input class="input input-bordered w-full rounded-xl" type="number" v-model="form.minorChildren"
-                                id="minorChildren" name="minorChildren">
+                            <input class="input input-bordered w-full rounded-xl" type="number"
+                                v-model="form.dependents.otherDependents" id="minorChildren" name="minorChildren">
                         </div>
 
                         <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">Celular</span>
                             </label>
-                            <input class="input input-bordered w-full rounded-xl" type="text" v-model="form.number"
-                                @input="validatePhone" required />
+                            <input class="input input-bordered w-full rounded-xl" type="text" v-model="form.phone"
+                                @input="formatPhone" required />
                             <span v-if="phoneError" class="text-xs text-red-500">{{ phoneError }}</span>
                         </div>
                     </div>
@@ -267,7 +271,7 @@
                 </div>
             </div>
 
-            <Butoon type="submit" @click="validarCampo" class="btn btn-primary mt-8">Salvar</Butoon>
+            <Butoon type="submit" @click="submitForm" class="btn btn-lg btn-primary mt-16">Salvar</Butoon>
         </form>
 
     </div>
@@ -282,34 +286,67 @@ export default {
     data() {
         return {
             municipalities: [],
-            selectedMunicipality: 'Brumado',
             states: [],
             selectedState: 'BA',
             countries: [],
-            selectedCountry: 'Brasil',
             selectedImage: null,
             isCameraActive: false,
             form: {
-                imagem: '',
-                nome: '',
-                estadoCivil: '',
-                profissao: '',
-                naturalidade: '',
-                nacionalidade: '',
-                dataNascimento: '',
-                residencia: '',
-                localTrabalho: '',
-                carteiraProfissional: '',
-                serie: '',
-                sabeLer: '',
-                eleitor: '',
-                carteiraSindical: '',
-                cpf: '',
-                rg: '',
-                minorChildren: '',
-                maleChildren: '',
-                femaleChildren: '',
-            },
+                name: "",
+                unionCard: "",
+                cpf: "",
+                rg: "",
+                profession: "",
+                workplace: "",
+                phone: "",
+                nationality: "Brasil",
+                birthAt: "",
+                maritalStatus: "NEVER_MARRIED",
+                associationAt: "",
+                localOfficeId: 0,
+                address: {
+                    id: 0,
+                    street: "",
+                    city: "Brumado",
+                    number: 0,
+                    complement: "",
+                    neighborhood: "",
+                    zipCode: ""
+                },
+                dependents: {
+                    id: 0,
+                    wifeName: "",
+                    minorChildren: 0,
+                    maleChildren: 0,
+                    femaleChildren: 0,
+                    otherDependents: 0
+                },
+                affiliation: {
+                    id: 0,
+                    fatherName: "",
+                    motherName: ""
+                },
+                placeOfBirth: {
+                    id: 0,
+                    city: "",
+                    state: ""
+                },
+                associatePhoto: {
+                    id: 0,
+                    archiveName: "",
+                    originalName: "",
+                    contentType: "",
+                    size: 0,
+                    url: ""
+                },
+                workRecord: {
+                    id: 0,
+                    number: 0,
+                    series: ""
+                },
+                literate: true,
+                voter: true,
+            }
         };
     },
     mounted() {
@@ -320,7 +357,7 @@ export default {
     computed: {
         isBrazil() {
             // Check if the selected country is Brazil
-            return this.selectedCountry === 'Brasil';
+            return this.form.nationality === 'Brasil';
         },
     },
     setup() {
@@ -338,14 +375,9 @@ export default {
             }
         };
 
-        const submitForm = () => {
-            console.log('Formulário enviado:', this.form);
-        };
-
         return {
             camera,
             takeSnapshot,
-            submitForm,
         };
     },
     watch: {
@@ -353,7 +385,41 @@ export default {
         selectedCountry: 'resetStateAndMunicipality',
     },
     methods: {
-        
+        submitForm() {
+            // Remover formatação dos campos antes de enviar
+            this.form.cpf = this.form.cpf.replace(/\D/g, '');
+            this.form.rg = this.form.rg.replace(/\D/g, '');
+
+
+            axios.post('https://educampo.onrender.com/associates', this.form)
+                .then(response => {
+                    // Manipule a resposta aqui, se necessário
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    // Trate erros aqui
+                    console.error('Erro ao enviar a solicitação:', error);
+                });
+        },
+        formatPhone() {
+    // Remove caracteres não numéricos do número de celular
+    let phoneNumber = this.form.phone.replace(/\D/g, '');
+
+    // Garante que o número não tenha mais do que 11 dígitos
+    if (phoneNumber.length > 11) {
+      phoneNumber = phoneNumber.slice(0, 11);
+    }
+
+    // Formata o número no padrão brasileiro XX XXXXX-XXXX ou XX XXXX-XXXX
+    if (phoneNumber.length >= 7) {
+      phoneNumber = `${phoneNumber.substring(0, 2)} ${phoneNumber.substring(2, 7)}-${phoneNumber.substring(7)}`;
+    } else {
+      phoneNumber = `${phoneNumber.substring(0, 2)} ${phoneNumber.substring(2)}`;
+    }
+
+    // Atualiza o campo 'phone' no objeto 'form' com o número formatado
+    this.form.phone = phoneNumber;
+  },
         formatarRG() {
             // Remover caracteres não numéricos
             this.form.rg = this.form.rg.replace(/\D/g, '');
