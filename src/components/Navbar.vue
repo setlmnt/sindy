@@ -1,5 +1,5 @@
 <template>
-    <nav class="h-screen w-24 flex flex-col justify-between p-2 bg-secondary">
+    <nav class="h-screen w-24 flex flex-col justify-between p-2 bg-neutral">
         <div>
             <img src="" alt="">
         </div>
