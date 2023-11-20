@@ -5,11 +5,32 @@
             <div class="w-full flex">
                 <div class="w-1/2 mr-4">
                     <div>
-                        <camera :resolution="{ width: 375, height: 600 }" ref="camera" autoplay></camera>
-                        <button @click="takeSnapshot">Capturar Foto</button>
-                        <div v-if="snapshotUrl">
-                            <img :src="snapshotUrl" alt="Snapshot">
-                        </div>
+                        <!-- Input para escolher entre abrir a câmera ou escolher do computador -->
+                        <input type="file" @change="handleFileInput" accept="image/*">
+
+                        <!-- Botão para abrir a câmera -->
+                        <button @click="openCamera">Abrir Câmera</button>
+
+                        <!-- Modal para mostrar a câmera -->
+                        <modal v-if="showCameraModal" @close="closeCameraModal">
+                            <div>
+                                <camera :resolution="{ width: 375, height: 600 }" ref="camera" autoplay></camera>
+                                <button @click="takeSnapshot">Capturar Foto</button>
+                                <div v-if="snapshotUrl">
+                                    <img :src="snapshotUrl" alt="Snapshot">
+                                </div>
+                            </div>
+                        </modal>
+
+                        <!-- Modal para mostrar a imagem do computador -->
+                        <modal v-if="showImageModal" @close="closeImageModal">
+                            <div>
+                                <input type="file" @change="handleFileInput" accept="image/*">
+                                <div v-if="selectedImageUrl">
+                                    <img :src="selectedImageUrl" alt="Selected Image">
+                                </div>
+                            </div>
+                        </modal>
                     </div>
                     <div>
                         <label class="label">
@@ -167,6 +188,10 @@ import Camera from 'simple-vue-camera';
 export default {
     data() {
         return {
+            snapshotUrl: null,
+            showCameraModal: false,
+            showImageModal: false,
+            selectedImageUrl: null,
             form: {
                 imagem: '',
                 nome: '',
@@ -207,6 +232,31 @@ export default {
             submitForm,
         };
     },
+    methods: {
+    openCamera() {
+      this.showCameraModal = true;
+    },
+    closeCameraModal() {
+      this.showCameraModal = false;
+    },
+    openImageModal() {
+      this.showImageModal = true;
+    },
+    closeImageModal() {
+      this.showImageModal = false;
+    },
+    takeSnapshot() {
+      // Lógica para capturar uma foto da câmera
+    },
+    handleFileInput(event) {
+      // Lógica para lidar com a seleção de um arquivo do computador
+      const file = event.target.files[0];
+      if (file) {
+        this.selectedImageUrl = URL.createObjectURL(file);
+        this.openImageModal();
+      }
+    },
+  },
 };
 </script>
 
