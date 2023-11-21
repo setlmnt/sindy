@@ -1,7 +1,7 @@
 <template>
-  <div :data-theme="currentTheme" class="flex h-screen">
+  <div :data-theme="currentTheme" class="flex">
     <Navbar @theme-toggle="toggleTheme" />
-    <router-view></router-view>
+    <router-view class="ml-24"></router-view>
   </div>
 </template>
 
