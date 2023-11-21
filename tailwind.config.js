@@ -5,7 +5,13 @@ export default {
     "./src/**/*.{vue,js,ts,jsx,tsx,svg}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        Roboto: ["Roboto Condensed", "sans-serif"],
+        Antonio: ["Antonio", "sans-serif"],
+        Cairo: ["Cairo Play", "sans-serif"],
+      }
+    },
   },
   plugins: [require("daisyui")],
   daisyui: {
