@@ -1,10 +1,12 @@
 <template>
-    <nav class=" w-24 flex flex-col justify-between p-2 bg-primary-content">
-        <div>
-            <img src="" alt="">
+    <nav class="w-24 fixed h-screen flex flex-col justify-between p-2 bg-primary-content">
+        <div class="mx-auto mt-8">
+            <h1 class="text-4xl font-Cairo leading-7 space-y-5">Sin<br>dy.</h1>
         </div>
 
-        <ul class="flex flex-col h-1/4 justify-between">
+        <div></div>
+
+        <ul class="flex flex-col h-52 justify-between">
             <li>
                 <Button @click="$router.push('/')" class="w-full" :class="$route.path == '/' ? 'btn-primary' : ''">
                     <svg :class="{ 'dark-theme': currentTheme === 'dark', 'light-theme': currentTheme === 'light' }"
@@ -39,7 +41,7 @@
                 </Button>
             </li>
         </ul>
-        <label class="swap swap-rotate">
+        <label class="btn btn-ghost w-full h-16 swap swap-rotate">
 
             <!-- this hidden checkbox controls the state -->
             <input type="checkbox" class="theme-controller" value="synthwave" @click="toggleTheme"/>
@@ -57,7 +59,7 @@
             </svg>
 
         </label>
-        <Button class="w-full btn-ghost"><img class="w-full" src="../assets/imgs/icons/exit.svg" alt=""></Button>
+        <Button class=" btn-ghost"><svg class="fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="logout"><path d="M4,12a1,1,0,0,0,1,1h7.59l-2.3,2.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l4-4a1,1,0,0,0,.21-.33,1,1,0,0,0,0-.76,1,1,0,0,0-.21-.33l-4-4a1,1,0,1,0-1.42,1.42L12.59,11H5A1,1,0,0,0,4,12ZM17,2H7A3,3,0,0,0,4,5V8A1,1,0,0,0,6,8V5A1,1,0,0,1,7,4H17a1,1,0,0,1,1,1V19a1,1,0,0,1-1,1H7a1,1,0,0,1-1-1V16a1,1,0,0,0-2,0v3a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V5A3,3,0,0,0,17,2Z"></path></svg></Button>
     </nav>
 </template>
 <script>
