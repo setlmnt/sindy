@@ -76,12 +76,21 @@
                         </div>
                     </div>
 
-                    <div class="w-full">
-                        <label class="label">
-                            <span class="label-text">Data de Nascimento</span>
-                        </label>
-                        <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.birthAt"
-                            @input="formatDate" required />
+                    <div class="flex w-full">
+                        <div class="w-full mr-4">
+                            <label class="label">
+                                <span class="label-text">Data de Nascimento</span>
+                            </label>
+                            <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.birthAt"
+                                required />
+                        </div>
+                        <div class="w-full">
+                            <label class="label">
+                                <span class="label-text">Data de Associação</span>
+                            </label>
+                            <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.associationAt"
+                                required />
+                        </div>
                     </div>
 
                     <div class="flex w-full">
@@ -350,6 +359,7 @@ export default {
         };
     },
     mounted() {
+        this.gerarDataAtual();
         this.fetchCountries();
         this.fetchStates();
         this.fetchMunicipalities();
@@ -386,7 +396,6 @@ export default {
     },
     methods: {
         submitForm() {
-            // Remover formatação dos campos antes de enviar
             this.form.cpf = this.form.cpf.replace(/\D/g, '');
             this.form.rg = this.form.rg.replace(/\D/g, '');
 
@@ -400,16 +409,10 @@ export default {
                     // Trate erros aqui
                     console.error('Erro ao enviar a solicitação:', error);
                 });
+            console.log(this.form.associationAt);
         },
-        formatDate(event) {
-            // Obtém o valor da entrada de data
-            const inputValue = event.target.value;
-
-            // Converte a data para o formato desejado (YYYY-MM-DD)
-            const formattedDate = new Date(inputValue).toISOString().split('T')[0];
-
-            // Atualiza o campo 'birthAt' no objeto 'form' com a data formatada
-            this.form.birthAt = formattedDate;
+        gerarDataAtual() {
+            this.form.associationAt = new Date().toLocaleDateString('en-CA');
         },
         formatPhone() {
             // Remove caracteres não numéricos do número de celular
