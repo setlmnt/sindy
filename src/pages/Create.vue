@@ -19,11 +19,13 @@
                             <div v-if="isCameraActive || selectedImage" class="absolute top-0 left-0 w-full h-full">
                                 <img v-if="selectedImage" :src="selectedImage" alt="Imagem Selecionada"
                                     class="w-full h-full object-cover" />
-                                <video v-if="isCameraActive" ref="cameraFeed" width="100%" height="100%" autoplay></video>
-                                <Button @click="captureFromCamera, clearSelection" v-if="isCameraActive">Capturar</Button>
+                                <video v-if="isCameraActive" ref="cameraFeed" class="w-full h-full" autoplay></video>
+                                <Button class="btn btn-neutral" @click="captureFromCamera, clearSelection"
+                                    v-if="isCameraActive">Capturar</Button>
                             </div>
                             <input type="hidden" name="imagem" :value="selectedImage" />
                         </div>
+
 
                         <div class="w-full h-full flex flex-col justify-end">
                             <div>
@@ -577,34 +579,43 @@ export default {
             input.click();
         },
         openCamera() {
-            this.isCameraActive = true;
-            // Adicione a lógica específica da câmera aqui, por exemplo, iniciar a câmera.
-            navigator.mediaDevices
-                .getUserMedia({ video: true })
-                .then((stream) => {
-                    this.$refs.cameraFeed.srcObject = stream;
-                })
-                .catch((error) => {
-                    console.error('Erro ao acessar a câmera:', error);
-                    this.isCameraActive = false;
-                });
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                // Navegadores que suportam navigator.mediaDevices
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then((stream) => {
+                        this.$refs.cameraFeed.srcObject = stream;
+                        this.isCameraActive = true;
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao acessar a câmera:', error);
+                        this.isCameraActive = false;
+                    });
+            } else if (window.electron) {
+                // Se estiver no Electron, use a API apropriada do Electron
+                const { ipcRenderer } = window.electron;
+                ipcRenderer.send('open-camera'); // Substitua 'open-camera' com o evento real que você usaria no Electron
+            } else {
+                console.error('A API navigator.mediaDevices não está disponível neste ambiente.');
+            }
         },
         captureFromCamera() {
-            // Adicione a lógica para capturar uma imagem da câmera aqui.
             const canvas = document.createElement('canvas');
             canvas.width = this.$refs.cameraFeed.videoWidth;
             canvas.height = this.$refs.cameraFeed.videoHeight;
             const context = canvas.getContext('2d');
             context.drawImage(this.$refs.cameraFeed, 0, 0, canvas.width, canvas.height);
 
-            // Converta o quadro capturado para uma imagem base64 (data URL)
-            const imageData = canvas.toDataURL('image/png');
-            console.log('Imagem da câmera capturada:', imageData);
+            // Converta a imagem para um formato base64 ou qualquer outra manipulação necessária
+            const capturedImage = canvas.toDataURL('image/jpeg');
 
-            // Aqui, você pode definir this.selectedImage ou realizar qualquer ação desejada com a imagem capturada.
+            // Faça o que for necessário com a imagem capturada, por exemplo, atribua à variável selectedImage
+            this.selectedImage = capturedImage;
 
-            // Desligue a câmera após a captura
+            // Desative a transmissão da câmera
             this.isCameraActive = false;
+        },
+        clearSelection() {
+            this.selectedImage = null;
         },
         handleImage(file) {
             const reader = new FileReader();
