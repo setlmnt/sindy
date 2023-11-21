@@ -1,7 +1,7 @@
 <template>
-    <div class="w-full ">
+    <div class="w-full h-screen">
         <h1 class="ml-40 mt-12 mb-12 text-5xl">Cadastrar novo associado</h1>
-        <form @keydown="validarCampo" class="w-3/4  mx-auto  border-2 border-secondary rounded-2xl p-8"
+        <form @keydown="validarCampo" class="w-3/4  mx-auto  border-2 border-neutral rounded-2xl p-8"
             @submit.prevent="submitForm">
             <div class="w-full flex">
                 <div class="w-1/2 mr-4">
