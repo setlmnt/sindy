@@ -1,10 +1,10 @@
 <template>
-    <div class="w-full h-screen">
-        <h1 class="ml-40 mt-12 mb-12 text-5xl">Cadastrar novo associado</h1>
-        <form @keydown="validarCampo" class="w-3/4  mx-auto  border-2 border-neutral rounded-2xl p-8"
+    <div class="w-full h-full lg:h-screen">
+        <h1 class="ml-40 mt-10 mb-10 text-5xl">Cadastrar novo associado</h1>
+        <form @keydown="validarCampo" class="w-3/4  mx-auto  border border-neutral rounded-2xl p-8"
             @submit.prevent="submitForm">
-            <div class="w-full flex">
-                <div class="w-1/2 mr-4">
+            <div class="w-full lg:flex">
+                <div class="lg:w-1/2 mr-4">
                     <div class="flex w-full h-2/5">
 
                         <div ref="dropArea"
@@ -42,11 +42,10 @@
                                     </label>
                                     <select class="select select-bordered w-full  rounded-xl" type="text"
                                         v-model="form.maritalStatus" required>
-                                        <option value="opcion1">solteiro</option>
-                                        <option value="opcion2">casado</option>
-                                        <option value="opcion3">divorciado</option>
-                                        <option value="opcion4">viúvo</option>
-
+                                        <option value="NEVER_MARRIED">solteiro</option>
+                                        <option value="MARRIED">casado</option>
+                                        <option value="DIVORCED">divorciado</option>
+                                        <option value="WIDOWED">viúvo</option>
                                     </select>
                                 </div>
 
@@ -104,8 +103,7 @@
                                 <span class="label-text">Naturalidade</span>
                             </label>
                             <div v-if="isBrazil">
-                                <!-- Municipality select component for Brazil -->
-                                <select class="select select-bordered w-full rounded-xl" v-model="form.address.city"
+                                <select class="select select-bordered w-full rounded-xl" v-model="form.placeOfBirth.city"
                                     required>
                                     <option v-for="municipality in municipalities" :key="municipality.id"
                                         :value="municipality.nome">
@@ -115,7 +113,7 @@
                             </div>
                             <div v-else>
                                 <!-- Municipality input component for other countries -->
-                                <input class="input input-bordered w-full rounded-xl" v-model="form.address.city"
+                                <input class="input input-bordered w-full rounded-xl" v-model="form.placeOfBirth.city"
                                     type="text" required />
                             </div>
                         </div>
@@ -125,15 +123,14 @@
                                 <span class="label-text">Estado</span>
                             </label>
                             <div v-if="isBrazil">
-                                <!-- State select component for Brazil -->
-                                <select class="select select-bordered w-full rounded-xl" v-model="selectedState" required>
+                                <select class="select select-bordered w-full rounded-xl" v-model="form.placeOfBirth.state" required>
                                     <option v-for="state in states" :key="state.id" :value="state.sigla">{{ state.sigla }}
                                     </option>
                                 </select>
                             </div>
                             <div v-else>
                                 <!-- State input component for other countries -->
-                                <input class="input input-bordered w-full rounded-xl" v-model="selectedState" type="text"
+                                <input class="input input-bordered w-full rounded-xl" v-model="form.placeOfBirth.state" type="text"
                                     required />
                             </div>
 
@@ -163,13 +160,13 @@
                             <label class="label">
                                 <span class="label-text">Local onde Trabalha</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.localtrabalho"
+                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.workplace"
                                 required />
                         </div>
                     </div>
                 </div>
 
-                <div class="w-1/2 ml-4">
+                <div class="lg:w-1/2 ml-4">
 
                     <div class="flex w-full">
                         <div class="w-full mr-4">
@@ -194,7 +191,7 @@
                             <label class="label">
                                 <span class="label-text">Sabe ler</span>
                             </label>
-                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.literate"
+                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.isLiterate"
                                 required>
                                 <option value="true">Sim</option>
                                 <option value="false">Não</option>
@@ -205,7 +202,7 @@
                             <label class="label">
                                 <span class="label-text">É Eleitor</span>
                             </label>
-                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.voter"
+                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.isVoter"
                                 required>
                                 <option value="true">Sim</option>
                                 <option value="false">Não</option>
@@ -236,12 +233,28 @@
                                 type="text" v-model="form.rg" required />
                         </div>
                     </div>
+                    <div class="w-full">
+                        <label class="label">
+                            <span class="label-text">Celular</span>
+                        </label>
+                        <input class="input input-bordered w-full rounded-xl" type="text" v-model="form.phone"
+                            @input="formatPhone" required />
+                        <span v-if="phoneError" class="text-xs text-red-500">{{ phoneError }}</span>
+                    </div>
 
                     <h1 class="text-2xl mt-8 mb-8">Dependentes:</h1>
 
-                    <div class="flex w-full">
+                    <div class="w-full">
+                        <label class="label">
+                            <span class="label-text">Nome Cônjuge</span>
+                        </label>
+                        <input class="input input-bordered w-full rounded-xl" type="text" v-model="form.dependents.wifeName" required />
+                    </div>
+                    <div class="flex w-full items-end">
                         <div class="w-full mr-4">
-                            <label class="label" for="minorChildren">Filhos menores de 18 anos</label>
+                            <label class="label">
+                                <span class="label-text">Filhos menores</span>
+                            </label>
                             <input class="input input-bordered w-full rounded-xl" type="number"
                                 v-model="form.dependents.minorChildren" id="minorChildren" name="minorChildren">
                         </div>
@@ -254,31 +267,21 @@
                                 v-model="form.dependents.maleChildren" required />
                         </div>
 
-                        <div class="w-full">
+                        <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">Sexo Feminino</span>
                             </label>
                             <input class="input input-bordered w-full  rounded-xl" type="number"
                                 v-model="form.dependents.femaleChildren" required />
                         </div>
-                    </div>
-                    <div class="flex w-full">
-                        <div class="w-full mr-4">
-                            <label class="label" for="minorChildren">Outros dependentes</label>
+                        <div class="w-full">
+                            <label class="label">
+                                <span class="label-text">Outros</span>
+                            </label>
                             <input class="input input-bordered w-full rounded-xl" type="number"
                                 v-model="form.dependents.otherDependents" id="minorChildren" name="minorChildren">
                         </div>
-
-                        <div class="w-full mr-4">
-                            <label class="label">
-                                <span class="label-text">Celular</span>
-                            </label>
-                            <input class="input input-bordered w-full rounded-xl" type="text" v-model="form.phone"
-                                @input="formatPhone" required />
-                            <span v-if="phoneError" class="text-xs text-red-500">{{ phoneError }}</span>
-                        </div>
                     </div>
-
                 </div>
             </div>
 
@@ -292,13 +295,14 @@
 import axios from 'axios';
 import Button from '../components/Button.vue';
 import { ref } from 'vue';
+import { saveAssociate } from '../api/associatesApi.ts';
+
 
 export default {
     data() {
         return {
             municipalities: [],
             states: [],
-            selectedState: 'BA',
             countries: [],
             selectedImage: null,
             isCameraActive: false,
@@ -312,13 +316,13 @@ export default {
                 phone: "",
                 nationality: "Brasil",
                 birthAt: "",
-                maritalStatus: "NEVER_MARRIED",
+                maritalStatus: "",
                 associationAt: "",
-                localOfficeId: 0,
+                localOfficeId: "",
                 address: {
                     id: 0,
                     street: "",
-                    city: "Brumado",
+                    city: "",
                     number: 0,
                     complement: "",
                     neighborhood: "",
@@ -339,8 +343,8 @@ export default {
                 },
                 placeOfBirth: {
                     id: 0,
-                    city: "",
-                    state: ""
+                    city: "Brumado",
+                    state: "BA"
                 },
                 associatePhoto: {
                     id: 0,
@@ -352,11 +356,11 @@ export default {
                 },
                 workRecord: {
                     id: 0,
-                    number: 0,
+                    number: "",
                     series: ""
                 },
-                literate: true,
-                voter: true,
+                isLiterate: true,
+                isVoter: true,
             }
         };
     },
@@ -393,25 +397,17 @@ export default {
         };
     },
     watch: {
-        selectedState: 'fetchMunicipalities',
-        selectedCountry: 'resetStateAndMunicipality',
+        'form.placeOfBirth.state': 'fetchMunicipalities',
     },
     methods: {
         submitForm() {
-            this.form.cpf = this.form.cpf.replace(/\D/g, '');
-            this.form.rg = this.form.rg.replace(/\D/g, '');
-
-
-            axios.post('https://educampo.onrender.com/associates', this.form)
-                .then(response => {
-                    // Manipule a resposta aqui, se necessário
-                    console.log(response.data);
-                })
-                .catch(error => {
-                    // Trate erros aqui
-                    console.error('Erro ao enviar a solicitação:', error);
-                });
-            console.log(this.form.associationAt);
+            try {
+                const response = saveAssociate(this.form);
+                console.log('Associado criado com sucesso:', response);
+            } catch (error) {
+                console.error('Erro ao criar associado:', error.message);
+                // Trate o erro conforme necessário (exibindo uma mensagem ao usuário, por exemplo)
+            }
         },
         gerarDataAtual() {
             this.form.associationAt = new Date().toLocaleDateString('en-CA');
@@ -465,7 +461,7 @@ export default {
         validarCPF() {
             let cpf = this.form.cpf.replace(/\D/g, ''); // Remover não dígitos
 
-            if (cpf.length !== 11 || !/^\d{11}$/.test(cpf)) {
+            if (!/^\d{11}$/.test(cpf) || cpf === '00000000000' || cpf === '11111111111' || cpf === '22222222222' || cpf === '33333333333' || cpf === '44444444444' || cpf === '55555555555' || cpf === '66666666666' || cpf === '77777777777' || cpf === '88888888888' || cpf === '99999999999') {
                 this.cpfError = 'CPF inválido';
                 return;
             }
@@ -496,7 +492,7 @@ export default {
                 remainder = 0;
             }
 
-            if (remainder !== parseInt(cpf.charAt(10))) {
+            if (remainder !== parseInt(cpf.charAt(10)) && !this.form.cpf.length === 11) {
                 this.cpfError = 'CPF inválido';
                 return;
             }
@@ -519,7 +515,6 @@ export default {
                 const response = await axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados');
                 this.states = response.data.map(state => ({
                     id: state.id,
-                    nome: state.nome,
                     sigla: state.sigla,
                 }));
             } catch (error) {
@@ -528,7 +523,7 @@ export default {
         },
         async fetchMunicipalities() {
             try {
-                const response = await axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${this.selectedState}/municipios`);
+                const response = await axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${this.form.placeOfBirth.state}/municipios`);
                 this.municipalities = response.data.map(municipality => ({
                     id: municipality.id,
                     nome: municipality.nome,
@@ -625,8 +620,7 @@ export default {
             };
         },
         validarCampo() {
-            this.form.nome = this.form.nome.replace(/[^a-zA-ZÀ-ÿ ]/g, '');
-            this.form.filiacao = this.form.filiacao.replace(/[^a-zA-ZÀ-ÿ ]/g, '');
+            this.form.name = this.form.name.replace(/[^a-zA-ZÀ-ÿ ]/g, '');
             this.form.cpf = this.form.cpf.replace(/\D/g, '');
         },
     },
