@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full h-16 flex">
+    <div class="h-16 flex">
         <input type="text" placeholder="Buscar" class="input h-full input-bordered w-72 max-w-xs rounded-xl mr-2" />
         <Button class="btn btn-primary h-full rounded-xl">
             <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="search" style="width: 24px; height: 24px;">
