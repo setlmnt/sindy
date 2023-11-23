@@ -1,22 +1,19 @@
 <template>
     <div class="w-full h-full lg:h-screen">
         <h1 class="ml-40 mt-10 mb-10 text-5xl">Cadastrar novo associado</h1>
-        <form @keydown="validarCampo" class="w-3/4  mx-auto  border border-neutral rounded-2xl p-8"
+        <form @keydown="validarCampo" class="w-3/4 mx-auto border border-neutral rounded-2xl p-8"
             @submit.prevent="submitForm">
             <div class="w-full lg:flex">
                 <div class="lg:w-1/2 mr-4">
-                    <div class="flex w-full h-2/5">
-
+                    <div class="w-full flex h-2/5">
                         <div ref="dropArea"
-                            class="border-2 border-dashed border-accent p-4 mr-4 w-64 text-center cursor-pointer relative"
+                            class="w-64 p-4 mr-4 border-2 border-dashed border-accent text-center cursor-pointer relative"
                             @dragover.prevent @dragenter="addDragOverClass" @dragleave="removeDragOverClass"
                             @drop="handleDrop">
                             <span class="block mb-4 text-lg">Arraste e solte ou:</span>
-                            <button @click="openFileInput" class="btn btn-primary w-full">Escolher Arquivo</button>
-                            <button @click="openCamera" class="btn btn-secondary w-full mt-2">Abrir Câmera</button>
-
-                            <!-- Exibir a imagem da câmera ou arquivo selecionado -->
-                            <div v-if="isCameraActive || selectedImage" class="absolute top-0 left-0 w-full h-full">
+                            <button @click="openFileInput" class="w-full btn btn-primary">Escolher Arquivo</button>
+                            <button @click="openCamera" class="w-full mt-2 btn btn-secondary">Abrir Câmera</button>
+                            <div v-if="isCameraActive || selectedImage" class="w-full h-full absolute top-0 left-0">
                                 <img v-if="selectedImage" :src="selectedImage" alt="Imagem Selecionada"
                                     class="w-full h-full object-cover" />
                                 <video v-if="isCameraActive" ref="cameraFeed" class="w-full h-full" autoplay></video>
@@ -25,22 +22,20 @@
                             </div>
                             <input type="hidden" name="imagem" :value="selectedImage" />
                         </div>
-
-
                         <div class="w-full h-full flex flex-col justify-end">
                             <div>
                                 <label class="label">
                                     <span class="label-text">Nome</span>
                                 </label>
-                                <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.name"
+                                <input class="w-full input input-bordered rounded-xl" type="text" v-model="form.name"
                                     required />
                             </div>
-                            <div class="flex w-full">
+                            <div class="w-full flex">
                                 <div class="w-full mr-4">
                                     <label class="label">
                                         <span class="label-text">Estado Civil</span>
                                     </label>
-                                    <select class="select select-bordered w-full  rounded-xl" type="text"
+                                    <select class="w-full select select-bordered rounded-xl" type="text"
                                         v-model="form.maritalStatus" required>
                                         <option value="NEVER_MARRIED">solteiro</option>
                                         <option value="MARRIED">casado</option>
@@ -48,16 +43,14 @@
                                         <option value="WIDOWED">viúvo</option>
                                     </select>
                                 </div>
-
                                 <div class="w-full">
                                     <label class="label">
                                         <span class="label-text">Profissão</span>
                                     </label>
-                                    <input class="input input-bordered w-full  rounded-xl" type="text"
+                                    <input class="w-full input input-bordered rounded-xl" type="text"
                                         v-model="form.profession" required />
                                 </div>
                             </div>
-
                         </div>
                     </div>
                     <div class="w-full flex">
@@ -65,45 +58,41 @@
                             <label class="label">
                                 <span class="label-text">Mãe</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text"
+                            <input class="w-full input input-bordered rounded-xl" type="text"
                                 v-model="form.affiliation.motherName" required />
                         </div>
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">Pai</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text"
+                            <input class="w-full input input-bordered rounded-xl" type="text"
                                 v-model="form.affiliation.fatherName" required />
                         </div>
                     </div>
-
-                    <div class="flex w-full">
+                    <div class="w-full flex">
                         <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">Data de Nascimento</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.birthAt"
+                            <input class="w-full input input-bordered rounded-xl" type="date" v-model="form.birthAt"
                                 required />
                         </div>
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">Data de Associação</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="date" v-model="form.associationAt"
+                            <input class="w-full input input-bordered rounded-xl" type="date" v-model="form.associationAt"
                                 required />
                         </div>
                     </div>
-
-                    <div class="flex w-full">
+                    <div class="w-full flex">
                         <div class="w-full mr-4">
-                            <!-- State select component -->
                             <StateSelect v-model="selectedState" />
-
                             <label class="label">
                                 <span class="label-text">Naturalidade</span>
                             </label>
                             <div v-if="isBrazil">
-                                <select class="select select-bordered w-full rounded-xl" v-model="form.placeOfBirth.city"
+                                <select class="w-full select select-bordered rounded-xl" v-model="form.placeOfBirth.city"
                                     required>
                                     <option v-for="municipality in municipalities" :key="municipality.id"
                                         :value="municipality.nome">
@@ -112,81 +101,73 @@
                                 </select>
                             </div>
                             <div v-else>
-                                <!-- Municipality input component for other countries -->
-                                <input class="input input-bordered w-full rounded-xl" v-model="form.placeOfBirth.city"
+                                <input class="w-full input input-bordered rounded-xl" v-model="form.placeOfBirth.city"
                                     type="text" required />
                             </div>
                         </div>
-
                         <div class="w-48 mr-4">
                             <label class="label">
                                 <span class="label-text">Estado</span>
                             </label>
                             <div v-if="isBrazil">
-                                <select class="select select-bordered w-full rounded-xl" v-model="form.placeOfBirth.state" required>
-                                    <option v-for="state in states" :key="state.id" :value="state.sigla">{{ state.sigla }}
+                                <select class="w-full select select-bordered rounded-xl" v-model="form.placeOfBirth.state"
+                                    required>
+                                    <option v-for="state in states" :key="state.id" :value="state.sigla">
+                                        {{ state.sigla }}
                                     </option>
                                 </select>
                             </div>
                             <div v-else>
-                                <!-- State input component for other countries -->
-                                <input class="input input-bordered w-full rounded-xl" v-model="form.placeOfBirth.state" type="text"
-                                    required />
+                                <input class="w-full input input-bordered rounded-xl" v-model="form.placeOfBirth.state"
+                                    type="text" required />
                             </div>
-
                         </div>
-
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">Nacionalidade</span>
                             </label>
-                            <select class="select select-bordered w-full rounded-xl" v-model="form.nationality" required>
-                                <option v-for="country in countries" :key="country.id" :value="country.nome">{{ country.nome
-                                }}</option>
+                            <select class="w-full select select-bordered rounded-xl" v-model="form.nationality" required>
+                                <option v-for="country in countries" :key="country.id" :value="country.nome">
+                                    {{ country.nome }}
+                                </option>
                             </select>
                         </div>
                     </div>
-
-                    <div class="flex w-full">
+                    <div class="w-full flex">
                         <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">Residencia</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.residencia"
+                            <input class="w-full input input-bordered rounded-xl" type="text" v-model="form.residencia"
                                 required />
                         </div>
-
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">Local onde Trabalha</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.workplace"
+                            <input class="w-full input input-bordered rounded-xl" type="text" v-model="form.workplace"
                                 required />
                         </div>
                     </div>
                 </div>
-
                 <div class="lg:w-1/2 ml-4">
-
-                    <div class="flex w-full">
+                    <div class="w-full flex">
                         <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">Carteira Profissional</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text"
+                            <input class="w-full input input-bordered rounded-xl" type="text"
                                 v-model="form.workRecord.number" required />
                         </div>
-
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">Série</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="select"
+                            <input class="w-full input input-bordered rounded-xl" type="select"
                                 v-model="form.workRecord.series" required>
                         </div>
                     </div>
-
-                    <div class="flex w-full">
+                    <div class="w-full flex">
                         <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">Sabe ler</span>
@@ -197,12 +178,11 @@
                                 <option value="false">Não</option>
                             </select>
                         </div>
-
                         <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">É Eleitor</span>
                             </label>
-                            <select class="select select-bordered w-full  rounded-xl" type="text" v-model="form.isVoter"
+                            <select class="w-full select select-bordered rounded-xl" type="text" v-model="form.isVoter"
                                 required>
                                 <option value="true">Sim</option>
                                 <option value="false">Não</option>
@@ -212,24 +192,22 @@
                             <label class="label">
                                 <span class="label-text">Carteira Sindical</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="text" v-model="form.unionCard"
+                            <input class="w-full input input-bordered rounded-xl" type="text" v-model="form.unionCard"
                                 required />
                         </div>
                     </div>
-
-                    <div class="flex w-full">
+                    <div class="w-full flex">
                         <div class="w-full mr-4">
                             <label class="label" for="cpf">CPF</label>
-                            <input class="input input-bordered w-full  rounded-xl" v-model="form.cpf" @input="formatarCPF"
+                            <input class="w-full input input-bordered rounded-xl" v-model="form.cpf" @input="formatarCPF"
                                 id="cpf" name="cpf" maxlength="14">
                             <span style="color: red;">{{ cpfError }}</span>
                         </div>
-
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">RG</span>
                             </label>
-                            <input maxlength="12" @input="formatarRG" class="input input-bordered w-full  rounded-xl"
+                            <input maxlength="12" @input="formatarRG" class="w-full input input-bordered rounded-xl"
                                 type="text" v-model="form.rg" required />
                         </div>
                     </div>
@@ -237,57 +215,54 @@
                         <label class="label">
                             <span class="label-text">Celular</span>
                         </label>
-                        <input class="input input-bordered w-full rounded-xl" type="text" v-model="form.phone"
+                        <input class="w-full input input-bordered rounded-xl" type="text" v-model="form.phone"
                             @input="formatPhone" required />
-                        <span v-if="phoneError" class="text-xs text-red-500">{{ phoneError }}</span>
+                        <span v-if="phoneError" class="text-xs text-red-500">
+                            {{ phoneError }}
+                        </span>
                     </div>
-
                     <h1 class="text-2xl mt-8 mb-8">Dependentes:</h1>
-
                     <div class="w-full">
                         <label class="label">
                             <span class="label-text">Nome Cônjuge</span>
                         </label>
-                        <input class="input input-bordered w-full rounded-xl" type="text" v-model="form.dependents.wifeName" required />
+                        <input class="w-full input input-bordered rounded-xl" type="text" v-model="form.dependents.wifeName"
+                            required />
                     </div>
-                    <div class="flex w-full items-end">
+                    <div class="w-full flex items-end">
                         <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">Filhos menores</span>
                             </label>
-                            <input class="input input-bordered w-full rounded-xl" type="number"
+                            <input class="w-full input input-bordered rounded-xl" type="number"
                                 v-model="form.dependents.minorChildren" id="minorChildren" name="minorChildren">
                         </div>
-
                         <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">Sexo Masculino</span>
                             </label>
-                            <input class="input input-bordered w-full rounded-xl" type="number"
+                            <input class="w-full input input-bordered rounded-xl" type="number"
                                 v-model="form.dependents.maleChildren" required />
                         </div>
-
                         <div class="w-full mr-4">
                             <label class="label">
                                 <span class="label-text">Sexo Feminino</span>
                             </label>
-                            <input class="input input-bordered w-full  rounded-xl" type="number"
+                            <input class="w-full input input-bordered rounded-xl" type="number"
                                 v-model="form.dependents.femaleChildren" required />
                         </div>
                         <div class="w-full">
                             <label class="label">
                                 <span class="label-text">Outros</span>
                             </label>
-                            <input class="input input-bordered w-full rounded-xl" type="number"
+                            <input class="w-full input input-bordered rounded-xl" type="number"
                                 v-model="form.dependents.otherDependents" id="minorChildren" name="minorChildren">
                         </div>
                     </div>
                 </div>
             </div>
-
             <Butoon type="submit" @click="submitForm" class="btn btn-lg btn-primary mt-16">Salvar</Butoon>
         </form>
-
     </div>
 </template>
   
@@ -296,7 +271,6 @@ import axios from 'axios';
 import Button from '../components/Button.vue';
 import { ref } from 'vue';
 import { saveAssociate } from '../api/associatesApi.ts';
-
 
 export default {
     data() {
