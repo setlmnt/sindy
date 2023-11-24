@@ -22,7 +22,7 @@
             <div></div>
         </header>
         <main class="flex">
-            <table class="table-xs lg:table-lg w-2/3 lg:w-1/2 mt-12 mr-4">
+            <table class="table-xs lg:table-lg w-3/5 mt-12 mr-4">
                 <!-- head -->
                 <thead>
                     <tr>
@@ -55,7 +55,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="w-1/3 lg:w-1/2 h-full fixed top-16 right-0 flex items-start justify-center">
+            <div class="w-2/5 h-full fixed top-16 right-0 flex items-start justify-center">
                 <div class="lg:w-5/6 h-4/5 flex flex-col justify-between mt-16 p-8 bg-base-300 rounded-2xl">
                     <div class="flex h-32 items-center">
                         <div class="mask mask-squircle w-32 h-32 avatar mr-8">
@@ -63,7 +63,7 @@
                                 alt="Avatar Tailwind CSS Component" />
                         </div>
                         <div>
-                            <h1 class="font-bold text-2xl lg:text-3xl mb-2">José Rodrigues de Costa e Silva</h1>
+                            <h1 class="font-bold text-xl lg:text-2xl mb-2">José Rodrigues de Costa e Silva</h1>
                             <h2 class="text-xl lg:text-2xl opacity-50">115.798.125-97</h2>
                         </div>
                     </div>
