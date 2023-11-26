@@ -3,11 +3,18 @@
         <div class="mx-auto mt-8">
             <h1 class="text-4xl font-Cairo leading-7 space-y-5">Sin<br>dy.</h1>
         </div>
-        <ul class="flex flex-col h-52 justify-between">
-            <li>
+        <ul>
+            <li class="mb-2">
                 <Button @click="$router.push('/')" class="w-full" :class="$route.path == '/' ? 'btn-primary' : ''">
-                    <svg :class="{ 'dark-theme': currentTheme === 'dark', 'light-theme': currentTheme === 'light' }"
-                        fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="search">
+                    <svg class="stroke-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="home">
+                        <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.65721519,18.7714023 L6.65721519,15.70467 C6.65719744,14.9246392 7.29311743,14.2908272 8.08101266,14.2855921 L10.9670886,14.2855921 C11.7587434,14.2855921 12.4005063,14.9209349 12.4005063,15.70467 L12.4005063,15.70467 L12.4005063,18.7809263 C12.4003226,19.4432001 12.9342557,19.984478 13.603038,20 L15.5270886,20 C17.4451246,20 19,18.4606794 19,16.5618312 L19,16.5618312 L19,7.8378351 C18.9897577,7.09082692 18.6354747,6.38934919 18.0379747,5.93303245 L11.4577215,0.685301154 C10.3049347,-0.228433718 8.66620456,-0.228433718 7.51341772,0.685301154 L0.962025316,5.94255646 C0.362258604,6.39702249 0.00738668938,7.09966612 0,7.84735911 L0,16.5618312 C0,18.4606794 1.55487539,20 3.47291139,20 L5.39696203,20 C6.08235439,20 6.63797468,19.4499381 6.63797468,18.7714023 L6.63797468,18.7714023" transform="translate(2.5 2)"></path>
+                    </svg>
+                </Button>
+            </li>
+            <li class="mb-2">
+                <Button @click="$router.push('/search')" class="w-full" :class="$route.path == '/search' ? 'btn-primary' : ''">
+                    <svg class="fill-current"
+                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="search">
                         <g data-name="Layer 2">
                             <path
                                 d="m20.71 19.29-3.4-3.39A7.92 7.92 0 0 0 19 11a8 8 0 1 0-8 8 7.92 7.92 0 0 0 4.9-1.69l3.39 3.4a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42zM5 11a6 6 0 1 1 6 6 6 6 0 0 1-6-6z"
@@ -16,11 +23,11 @@
                     </svg>
                 </Button>
             </li>
-            <li>
+            <li class="mb-2">
                 <Button @click="$router.push('/create')" class="w-full"
                     :class="$route.path == '/create' ? 'btn-primary' : ''">
-                    <svg :class="{ 'dark-theme': currentTheme === 'dark', 'light-theme': currentTheme === 'light' }"
-                        fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="plus">
+                    <svg class="fill-current"
+                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="plus">
                         <path d="M19,11H13V5a1,1,0,0,0-2,0v6H5a1,1,0,0,0,0,2h6v6a1,1,0,0,0,2,0V13h6a1,1,0,0,0,0-2Z"></path>
                     </svg>
                 </Button>
@@ -28,8 +35,8 @@
             <li>
                 <Button @click="$router.push('/monthly')" class="w-full"
                     :class="$route.path == '/monthly' ? 'btn-primary' : ''">
-                    <svg :class="{ 'dark-theme': currentTheme === 'dark', 'light-theme': currentTheme === 'light' }"
-                        fill="currentColor" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24"
+                    <svg class="fill-current"
+                         xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24"
                         id="calendar">
                         <path
                             d="M12,19a1,1,0,1,0-1-1A1,1,0,0,0,12,19Zm5,0a1,1,0,1,0-1-1A1,1,0,0,0,17,19Zm0-4a1,1,0,1,0-1-1A1,1,0,0,0,17,15Zm-5,0a1,1,0,1,0-1-1A1,1,0,0,0,12,15ZM19,3H18V2a1,1,0,0,0-2,0V3H8V2A1,1,0,0,0,6,2V3H5A3,3,0,0,0,2,6V20a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V6A3,3,0,0,0,19,3Zm1,17a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V11H20ZM20,9H4V6A1,1,0,0,1,5,5H6V6A1,1,0,0,0,8,6V5h8V6a1,1,0,0,0,2,0V5h1a1,1,0,0,1,1,1ZM7,15a1,1,0,1,0-1-1A1,1,0,0,0,7,15Zm0,4a1,1,0,1,0-1-1A1,1,0,0,0,7,19Z">
@@ -51,8 +58,7 @@
                 </svg>
             </label>
             <Button class="w-full btn-ghost">
-                <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                    id="logout">
+                <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="logout">
                     <path
                         d="M4,12a1,1,0,0,0,1,1h7.59l-2.3,2.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l4-4a1,1,0,0,0,.21-.33,1,1,0,0,0,0-.76,1,1,0,0,0-.21-.33l-4-4a1,1,0,1,0-1.42,1.42L12.59,11H5A1,1,0,0,0,4,12ZM17,2H7A3,3,0,0,0,4,5V8A1,1,0,0,0,6,8V5A1,1,0,0,1,7,4H17a1,1,0,0,1,1,1V19a1,1,0,0,1-1,1H7a1,1,0,0,1-1-1V16a1,1,0,0,0-2,0v3a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V5A3,3,0,0,0,17,2Z">
                     </path>
