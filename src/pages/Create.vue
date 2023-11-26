@@ -1,11 +1,11 @@
 <template>
     <div class="w-full h-full lg:h-screen">
-        <h1 class="ml-40 mt-10 mb-10 text-5xl">Cadastrar novo associado</h1>
-        <form @keydown="validarCampo" class="w-3/4 mx-auto border border-neutral rounded-2xl p-8"
+        <h1 class="ml-40 mt-10 mb-8 text-5xl">Cadastrar novo associado</h1>
+        <form @keydown="validarCampo" class="w-4/5 mx-auto border border-neutral rounded-2xl py-4 px-8"
             @submit.prevent="submitForm">
             <div class="w-full lg:flex">
                 <div class="lg:w-1/2 mr-4">
-                    <div class="w-full flex h-2/5">
+                    <div class="w-full flex h-2/6">
                         <div ref="dropArea"
                             class="w-64 p-4 mr-4 border-2 border-dashed border-accent text-center cursor-pointer relative"
                             @dragover.prevent @dragenter="addDragOverClass" @dragleave="removeDragOverClass"
@@ -133,24 +133,68 @@
                             </select>
                         </div>
                     </div>
-                    <div class="w-full flex">
-                        <div class="w-full mr-4">
-                            <label class="label">
-                                <span class="label-text">Residencia</span>
-                            </label>
-                            <input class="w-full input input-bordered rounded-xl" type="text" v-model="form.residencia"
-                                required />
+                    <div class="w-full">
+                        <div class="label">
+                            <Button class="label-text">Residencia</Button>
                         </div>
-                        <div class="w-full">
-                            <label class="label">
-                                <span class="label-text">Local onde Trabalha</span>
-                            </label>
-                            <input class="w-full input input-bordered rounded-xl" type="text" v-model="form.workplace"
-                                required />
+                        <div class="w-full border border-neutral px-4 py-2 rounded-xl">
+                            <div class="w-full flex">
+                                <div class="w-6/12 mr-4">
+                                    <label class="label">
+                                        <span class="label-text">Cidade</span>
+                                    </label>
+                                    <input class="w-full input input-bordered rounded-xl" type="text"
+                                        v-model="form.address.city" required />
+                                </div>
+                                <div class="w-7/12 mr-4">
+                                    <label class="label">
+                                        <span class="label-text">Bairro</span>
+                                    </label>
+                                    <input class="w-full input input-bordered rounded-xl" type="text"
+                                        v-model="form.address.neighborhood" required />
+                                </div>
+                                <div class="w-full">
+                                    <label class="label">
+                                        <span class="label-text">Rua</span>
+                                    </label>
+                                    <input class="w-full input input-bordered rounded-xl" type="text"
+                                        v-model="form.address.street" required />
+                                </div>
+                            </div>
+                            <div class="w-full flex">
+                                <div class="w-3/12 mr-4">
+                                    <label class="label">
+                                        <span class="label-text">Numero</span>
+                                    </label>
+                                    <input class="w-full input input-bordered rounded-xl" type="text"
+                                        v-model="form.address.number" required />
+                                </div>
+                                <div class="w-4/12 mr-4">
+                                    <label class="label">
+                                        <span class="label-text">CEP</span>
+                                    </label>
+                                    <input class="w-full input input-bordered rounded-xl" type="text"
+                                        v-model="form.address.zipCode" required />
+                                </div>
+                                <div class="w-full">
+                                <label class="label">
+                                    <span class="label-text">Complemento</span>
+                                </label>
+                                <input class="w-full input input-bordered rounded-xl" type="text"
+                                    v-model="form.address.complement" required />
+                            </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="lg:w-1/2 ml-4">
+                    <div class="w-full">
+                        <label class="label">
+                            <span class="label-text">Local onde Trabalha</span>
+                        </label>
+                        <input class="w-full input input-bordered rounded-xl" type="text" v-model="form.workplace"
+                            required />
+                    </div>
                     <div class="w-full flex">
                         <div class="w-full mr-4">
                             <label class="label">
@@ -226,7 +270,7 @@
                         <label class="label">
                             <span class="label-text">Nome Cônjuge</span>
                         </label>
-                        <input class="w-full input input-bordered rounded-xl" type="text" v-model="form.dependents.wifeName"
+                        <input class="w-full input input-bordered rounded-xl" type="text" v-model="form.dependents.spouse"
                             required />
                     </div>
                     <div class="w-full flex items-end">
@@ -261,7 +305,7 @@
                     </div>
                 </div>
             </div>
-            <Butoon type="submit" @click="submitForm" class="btn btn-lg btn-primary mt-16">Salvar</Butoon>
+            <Butoon type="submit" @click="submitForm" class="btn btn-lg btn-primary mt-12">Salvar</Butoon>
         </form>
     </div>
 </template>
@@ -270,7 +314,7 @@
 import axios from 'axios';
 import Button from '../components/Button.vue';
 import { ref } from 'vue';
-import { saveAssociate } from '../api/associatesApi.ts';
+import { saveAssociate } from '../api/associatesApi.ts'
 
 export default {
     data() {
@@ -294,34 +338,34 @@ export default {
                 associationAt: "",
                 localOfficeId: "",
                 address: {
-                    id: 0,
+                    
                     street: "",
                     city: "",
-                    number: 0,
+                    number: "",
                     complement: "",
                     neighborhood: "",
                     zipCode: ""
                 },
                 dependents: {
-                    id: 0,
-                    wifeName: "",
+                   
+                    spouse: "",
                     minorChildren: 0,
                     maleChildren: 0,
                     femaleChildren: 0,
                     otherDependents: 0
                 },
                 affiliation: {
-                    id: 0,
+                    
                     fatherName: "",
                     motherName: ""
                 },
                 placeOfBirth: {
-                    id: 0,
+                   
                     city: "Brumado",
                     state: "BA"
                 },
                 associatePhoto: {
-                    id: 0,
+                    id: "",
                     archiveName: "",
                     originalName: "",
                     contentType: "",
@@ -329,7 +373,7 @@ export default {
                     url: ""
                 },
                 workRecord: {
-                    id: 0,
+                    
                     number: "",
                     series: ""
                 },
@@ -375,12 +419,11 @@ export default {
     },
     methods: {
         submitForm() {
+            const response = saveAssociate(this.form);
             try {
-                const response = saveAssociate(this.form);
-                console.log('Associado criado com sucesso:', response);
+                console.log('OI', response);
             } catch (error) {
-                console.error('Erro ao criar associado:', error.message);
-                // Trate o erro conforme necessário (exibindo uma mensagem ao usuário, por exemplo)
+                console.log('OI', response);
             }
         },
         gerarDataAtual() {
