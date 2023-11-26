@@ -32,7 +32,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- row 1 -->
                     <tr v-for="person in persons" :key="person.id" @click=""
                         class="cursor-pointer p-8 border-b-2 border-neutral hover:bg-base-300">
                         <td class="avatar">
@@ -45,12 +44,11 @@
                             <div class="flex items-center gap-3">
                                 <div>
                                     <div class="font-bold text-lg lg:text-xl">{{ person.name }}</div>
-                                    <div class="text-sm opacity-50">{{ person.cpf }}</div>
                                 </div>
                             </div>
                         </td>
                         <td class="font-bold text-lg lg:text-xl w-2/5 lg:w-1/3">
-                            115.344.343-54
+                            {{ formatCPF(person.cpf) }}
                         </td>
                     </tr>
                 </tbody>
@@ -111,14 +109,20 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = getAllAssociates();
-                this.persons = response.data.content.map(person => ({
+                const response = await getAllAssociates();
+                console.log(response);
+                this.persons = response.content.map(person => ({
+                    id: person.id,
                     name: person.name,
                     cpf: person.cpf,
                 }));
+                console.log(person);
             } catch (error) {
                 console.error('Erro ao buscar dados:', error);
             }
+        },
+        formatCPF(cpf) {
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
         },
     },
 }
