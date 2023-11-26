@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../pages/Home.vue'
+import Search from '../pages/Search.vue'
 import Create from '../pages/Create.vue'
 import Monthly from '../pages/Monthly.vue'
 
@@ -8,6 +9,11 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    component: Search
   },
   {
     path: '/create',
