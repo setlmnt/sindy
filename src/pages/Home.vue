@@ -33,7 +33,7 @@
                 </thead>
                 <tbody>
                     <!-- row 1 -->
-                    <tr v-for="index in 100" :key="index" @click=""
+                    <tr v-for="person in persons" :key="person.id" @click=""
                         class="cursor-pointer p-8 border-b-2 border-neutral hover:bg-base-300">
                         <td class="avatar">
                             <div class="mask mask-squircle w-20 h-20">
@@ -44,8 +44,8 @@
                         <td class="">
                             <div class="flex items-center gap-3">
                                 <div>
-                                    <div class="font-bold text-lg lg:text-xl">José Rodrigues de Costa e Silva</div>
-                                    <div class="text-sm opacity-50">United States</div>
+                                    <div class="font-bold text-lg lg:text-xl">{{ person.name }}</div>
+                                    <div class="text-sm opacity-50">{{ person.cpf }}</div>
                                 </div>
                             </div>
                         </td>
@@ -93,10 +93,33 @@
 <script>
 import Search from '../components/Search.vue';
 import Button from '../components/Button.vue';
+import { getAllAssociates } from '../api/associatesApi.ts';
+
 export default {
     name: 'Home',
     components: {
         Search
-    }
+    },
+    data() {
+        return {
+            persons: [],
+        };
+    },
+    mounted() {
+        this.fetchData();
+    },
+    methods: {
+        async fetchData() {
+            try {
+                const response = getAllAssociates();
+                this.persons = response.data.content.map(person => ({
+                    name: person.name,
+                    cpf: person.cpf,
+                }));
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+            }
+        },
+    },
 }
 </script>
