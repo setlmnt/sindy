@@ -1,7 +1,7 @@
 <template>
     <div class="w-full px-20">
         <header class="sticky w-full h-28 pt-6 mb-4 flex items-center z-10 top-0 bg-base-100">
-            <Searchbar @search="handleSearch"></Searchbar>
+            <Searchbar @search="loadData"></Searchbar>
             <div class="dropdown dropdown-bottom">
                 <div class="indicator ml-36">
                     <span class="indicator-item left-2 top-3 badge badge-secondary">9</span>
@@ -22,8 +22,10 @@
             <div></div>
         </header>
         <main class="flex">
-            <table class="table-xs lg:table-lg w-3/5 mt-12 mr-4">
-                <!-- head -->
+            <div v-if="isLoading" class="w-3/5 h-96 mt-12 mr-4 inset-0 bg-opacity-75 flex items-center justify-center">
+                <span class="loading loading-spinner loading-lg"></span>
+            </div>
+            <table v-else class="table-xs lg:table-lg w-3/5 mt-12 mr-4">
                 <thead>
                     <tr>
                         <td></td>
@@ -97,6 +99,7 @@ export default {
     },
     data() {
         return {
+            isLoading: true,
             persons: [],
             selectedPerson: {
                 name: "",
@@ -157,13 +160,21 @@ export default {
         };
     },
     mounted() {
-        this.fetchData();
+        this.loadData();
     },
     methods: {
-        async fetchData() {
+        async loadData(searchText = null) {
             try {
-                const response = await getAllAssociates();
-                console.log(response);
+                this.isLoading = true;
+
+                let response;
+
+                if (searchText) {
+                    response = await getAllAssociates(searchText);
+                } else {
+                    response = await getAllAssociates();
+                }
+
                 this.persons = response.content.map(person => ({
                     id: person.id,
                     name: person.name,
@@ -172,9 +183,11 @@ export default {
                     birthAt: person.birthAt,
                     phone: person.phone,
                 }));
-                console.log(person);
+
             } catch (error) {
                 console.error('Erro ao buscar dados:', error);
+            } finally {
+                this.isLoading = false;
             }
         },
         formatCPF(cpf) {
@@ -187,25 +200,6 @@ export default {
         showDetails(person) {
             this.selectedPerson = person;
         },
-        async handleSearch(searchText) {
-    console.log('Search Text:', searchText);
-
-    try {
-        const response = await getAllAssociates(searchText);
-
-        this.persons = response.content.map(person => ({
-            id: person.id,
-            name: person.name,
-            cpf: person.cpf,
-            unionCard: person.unionCard,
-            birthAt: person.birthAt,
-            phone: person.phone,
-        }));
-    } catch (error) {
-        console.error("Error fetching associates:", error);
-        this.persons = [];
-    }
-},
     },
 }
 </script>
