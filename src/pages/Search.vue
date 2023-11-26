@@ -32,7 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="person in persons" :key="person.id" @click=""
+                    <tr v-for="person in persons" :key="person.id" @click="showDetails(person)"
                         class="cursor-pointer p-8 border-b-2 border-neutral hover:bg-base-300">
                         <td class="avatar">
                             <div class="mask mask-squircle w-20 h-20">
@@ -61,22 +61,19 @@
                                 alt="Avatar Tailwind CSS Component" />
                         </div>
                         <div>
-                            <h1 class="font-bold text-xl lg:text-2xl mb-2">José Rodrigues de Costa e Silva</h1>
-                            <h2 class="text-xl lg:text-2xl opacity-50">115.798.125-97</h2>
+                            <h1 class="font-bold text-xl lg:text-2xl mb-2">{{ selectedPerson.name }}</h1>
+                            <h2 class="text-xl lg:text-2xl opacity-50">{{ formatCPF(selectedPerson.cpf) }}</h2>
                         </div>
                     </div>
                     <div class="mb-2 mt-2">
                         <div class="w-full p-4 flex items-end">
-                            <h1 class="text-2xl mr-2">Carteira Sindical: {{ }}</h1>
+                            <h1 class="text-2xl mr-2">Carteira Sindical: {{ selectedPerson.unionCard }}</h1>
                         </div>
                         <div class="w-full p-4 flex items-end">
-                            <h1 class="text-2xl mr-2">Nascimento: {{ }}</h1>
+                            <h1 class="text-2xl mr-2">Nascimento: {{ formatBirthAt(selectedPerson.birthAt) }}</h1>
                         </div>
                         <div class="w-full p-4 flex items-end">
-                            <h1 class="text-2xl mr-2">Mensalidade: {{ }}</h1>
-                        </div>
-                        <div class="w-full p-4 flex items-end">
-                            <h1 class="text-2xl mr-2">Celular: {{ }}</h1>
+                            <h1 class="text-2xl mr-2">Celular: {{ selectedPerson.phone }}</h1>
                         </div>
                     </div>
                     <div>
@@ -101,6 +98,62 @@ export default {
     data() {
         return {
             persons: [],
+            selectedPerson: {
+                name: "",
+                unionCard: "",
+                cpf: "",
+                rg: "",
+                profession: "",
+                workplace: "",
+                phone: "",
+                nationality: "Brasil",
+                birthAt: "",
+                maritalStatus: "",
+                associationAt: "",
+                localOfficeId: "",
+                address: {
+                    
+                    street: "",
+                    city: "",
+                    number: "",
+                    complement: "",
+                    neighborhood: "",
+                    zipCode: ""
+                },
+                dependents: {
+                   
+                    spouse: "",
+                    minorChildren: 0,
+                    maleChildren: 0,
+                    femaleChildren: 0,
+                    otherDependents: 0
+                },
+                affiliation: {
+                    
+                    fatherName: "",
+                    motherName: ""
+                },
+                placeOfBirth: {
+                   
+                    city: "Brumado",
+                    state: "BA"
+                },
+                associatePhoto: {
+                    id: "",
+                    archiveName: "",
+                    originalName: "",
+                    contentType: "",
+                    size: 0,
+                    url: ""
+                },
+                workRecord: {
+                    
+                    number: "",
+                    series: ""
+                },
+                isLiterate: true,
+                isVoter: true,
+            },
         };
     },
     mounted() {
@@ -115,6 +168,9 @@ export default {
                     id: person.id,
                     name: person.name,
                     cpf: person.cpf,
+                    unionCard: person.unionCard,
+                    birthAt: person.birthAt,
+                    phone: person.phone,
                 }));
                 console.log(person);
             } catch (error) {
@@ -123,6 +179,13 @@ export default {
         },
         formatCPF(cpf) {
             return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        },
+        formatBirthAt(birthAt) {
+            const date = birthAt.split('-').reverse().join('');
+            return date.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
+        },
+        showDetails(person) {
+            this.selectedPerson = person;
         },
     },
 }
