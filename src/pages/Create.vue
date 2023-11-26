@@ -137,7 +137,7 @@
                         <div class="label">
                             <Button class="label-text">Residencia</Button>
                         </div>
-                        <div class="w-full border border-neutral px-4 py-2 rounded-xl">
+                        <div class="w-full border border-neutral px-4 py-4 rounded-xl">
                             <div class="w-full flex">
                                 <div class="w-6/12 mr-4">
                                     <label class="label">

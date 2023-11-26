@@ -1,7 +1,7 @@
 <template>
     <div class="w-full px-20">
         <header class="sticky w-full h-28 pt-6 mb-4 flex items-center z-10 top-0 bg-base-100">
-            <Search></Search>
+            <Searchbar @search="handleSearch"></Searchbar>
             <div class="dropdown dropdown-bottom">
                 <div class="indicator ml-36">
                     <span class="indicator-item left-2 top-3 badge badge-secondary">9</span>
@@ -86,14 +86,14 @@
     </div>
 </template>
 <script>
-import Search from '../components/Search.vue';
+import Searchbar from '../components/Searchbar.vue';
 import Button from '../components/Button.vue';
 import { getAllAssociates } from '../api/associatesApi.ts';
 
 export default {
     name: 'Home',
     components: {
-        Search
+        Searchbar
     },
     data() {
         return {
@@ -112,7 +112,7 @@ export default {
                 associationAt: "",
                 localOfficeId: "",
                 address: {
-                    
+
                     street: "",
                     city: "",
                     number: "",
@@ -121,7 +121,7 @@ export default {
                     zipCode: ""
                 },
                 dependents: {
-                   
+
                     spouse: "",
                     minorChildren: 0,
                     maleChildren: 0,
@@ -129,12 +129,12 @@ export default {
                     otherDependents: 0
                 },
                 affiliation: {
-                    
+
                     fatherName: "",
                     motherName: ""
                 },
                 placeOfBirth: {
-                   
+
                     city: "Brumado",
                     state: "BA"
                 },
@@ -147,7 +147,7 @@ export default {
                     url: ""
                 },
                 workRecord: {
-                    
+
                     number: "",
                     series: ""
                 },
@@ -187,6 +187,25 @@ export default {
         showDetails(person) {
             this.selectedPerson = person;
         },
+        async handleSearch(searchText) {
+    console.log('Search Text:', searchText);
+
+    try {
+        const response = await getAllAssociates(searchText);
+
+        this.persons = response.content.map(person => ({
+            id: person.id,
+            name: person.name,
+            cpf: person.cpf,
+            unionCard: person.unionCard,
+            birthAt: person.birthAt,
+            phone: person.phone,
+        }));
+    } catch (error) {
+        console.error("Error fetching associates:", error);
+        this.persons = [];
+    }
+},
     },
 }
 </script>

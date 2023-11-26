@@ -132,10 +132,27 @@ async function deleteAssociate(id: number): Promise<ApiResponse<void>> {
 }
 
 // GET /api/v1/associates
-async function getAllAssociates(query: string, pageable: any): Promise<ApiResponse<Associate[]>> {
-  const queryParams = new URLSearchParams({ query, pageable: JSON.stringify(pageable) });
-  return apiRequest<Associate[]>(`?${queryParams}`, 'GET');
+async function getAllAssociates(searchText?: string): Promise<ApiResponse<Associate[]>> {
+  let queryParams: string[] = [];
+
+  if (searchText) {
+    // Verificar se searchText é um CPF (sem pontuações)
+    if (/^\d{11}$/.test(searchText)) {
+      queryParams.push(`cpf=${encodeURIComponent(searchText)}`);
+    } else if (!isNaN(parseInt(searchText))) {
+      // Se não for um CPF, mas for um número, pesquisar por unionCard
+      queryParams.push(`unionCard=${parseInt(searchText)}`);
+    } else {
+      // Se não for nem CPF nem número, pesquisar por nome
+      queryParams.push(`name=${encodeURIComponent(searchText)}`);
+    }
+  }
+
+  const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+
+  return apiRequest<Associate[]>(queryString, 'GET');
 }
+
 
 // POST /api/v1/associates
 async function saveAssociate(data: any): Promise<ApiResponse<Associate>> {
