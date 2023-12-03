@@ -177,12 +177,12 @@
                                         v-model="form.address.zipCode" required />
                                 </div>
                                 <div class="w-full">
-                                <label class="label">
-                                    <span class="label-text">Complemento</span>
-                                </label>
-                                <input class="w-full input input-bordered rounded-xl" type="text"
-                                    v-model="form.address.complement" required />
-                            </div>
+                                    <label class="label">
+                                        <span class="label-text">Complemento</span>
+                                    </label>
+                                    <input class="w-full input input-bordered rounded-xl" type="text"
+                                        v-model="form.address.complement" required />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -309,12 +309,12 @@
         </form>
     </div>
 </template>
-  
+            
 <script>
 import axios from 'axios';
 import Button from '../components/Button.vue';
 import { ref } from 'vue';
-import { saveAssociate } from '../api/associatesApi.ts'
+import { saveAssociate, uploadAssociatePhoto } from '../api/associatesApi.ts'
 
 export default {
     data() {
@@ -322,8 +322,6 @@ export default {
             municipalities: [],
             states: [],
             countries: [],
-            selectedImage: null,
-            isCameraActive: false,
             form: {
                 name: "",
                 unionCard: "",
@@ -338,7 +336,7 @@ export default {
                 associationAt: "",
                 localOfficeId: "",
                 address: {
-                    
+
                     street: "",
                     city: "",
                     number: "",
@@ -347,7 +345,7 @@ export default {
                     zipCode: ""
                 },
                 dependents: {
-                   
+
                     spouse: "",
                     minorChildren: 0,
                     maleChildren: 0,
@@ -355,12 +353,12 @@ export default {
                     otherDependents: 0
                 },
                 affiliation: {
-                    
+
                     fatherName: "",
                     motherName: ""
                 },
                 placeOfBirth: {
-                   
+
                     city: "Brumado",
                     state: "BA"
                 },
@@ -373,13 +371,22 @@ export default {
                     url: ""
                 },
                 workRecord: {
-                    
+
                     number: "",
                     series: ""
                 },
                 isLiterate: true,
                 isVoter: true,
-            }
+            },
+            selectedImage: null,
+            isCameraActive: false,
+            photo: {
+                id: "",
+                archiveName: "",
+                originalName: "",
+                contentType: "",
+                size: 0,
+            },
         };
     },
     mounted() {
@@ -390,7 +397,6 @@ export default {
     },
     computed: {
         isBrazil() {
-            // Check if the selected country is Brazil
             return this.form.nationality === 'Brasil';
         },
     },
@@ -418,12 +424,38 @@ export default {
         'form.placeOfBirth.state': 'fetchMunicipalities',
     },
     methods: {
-        submitForm() {
-            const response = saveAssociate(this.form);
+        async submitForm() {
             try {
-                console.log('OI', response);
+                const response = await saveAssociate(this.form);
+                this.photo.id = response.id;
+                await this.submitPhoto(); // Wait for the photo upload to complete before proceeding
+                console.log('Associação salva com sucesso:', response);
             } catch (error) {
-                console.log('OI', response);
+                console.error('Erro ao salvar associado:', error);
+            }
+        },
+
+        async submitPhoto() {
+            try {
+                const formData = new FormData();
+
+                // Append photo information
+                formData.append('id', this.photo.id.toString());
+                formData.append('archiveName', this.photo.archiveName);
+                formData.append('originalName', this.photo.originalName);
+                formData.append('contentType', this.photo.contentType);
+                formData.append('size', this.photo.size.toString());
+
+                // Append the image file
+                formData.append('file', this.selectedImage, 'photo.jpg');
+
+                // Assuming associateId is available in your component
+                const associateId = this.photo.id; // Replace with the actual way you get the associateId
+
+                const response = await uploadAssociatePhoto(associateId, formData);
+                console.log('Foto enviada com sucesso:', response);
+            } catch (error) {
+                console.error('Erro ao enviar foto:', error);
             }
         },
         gerarDataAtual() {
@@ -578,6 +610,7 @@ export default {
                 this.handleImage(files[0]);
             }
         },
+
         openFileInput() {
             const input = document.createElement('input');
             input.type = 'file';
@@ -590,6 +623,7 @@ export default {
             };
             input.click();
         },
+
         openCamera() {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 // Navegadores que suportam navigator.mediaDevices
@@ -634,6 +668,15 @@ export default {
             reader.readAsDataURL(file);
             reader.onloadend = () => {
                 this.selectedImage = reader.result;
+            };
+        },
+        updatePhoto() {
+            this.photo = {
+                id: "",
+                archiveName: "",
+                originalName: "",
+                contentType: "",
+                size: 0,
             };
         },
         validarCampo() {
