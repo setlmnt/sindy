@@ -87,9 +87,22 @@ interface ApiResponse<T> {
 
 const API_BASE_URL = 'https://educampo.onrender.com/api/v1/associates';
 
-// Função genérica para realizar chamadas de API
+function getAuthToken(): string | null {
+  const tokenCookie = document.cookie
+    .split(';')
+    .map(cookie => cookie.trim())
+    .find(cookie => cookie.startsWith('jwtToken='));
+
+  if (tokenCookie) {
+    return tokenCookie.split('=')[1];
+  }
+
+  return null;
+}
+
 async function apiRequest<T>(url: string, method: string, data?: any): Promise<ApiResponse<T>> {
   const apiUrl = `${API_BASE_URL}${url}`;
+  const authToken = getAuthToken();
 
   try {
     const response: AxiosResponse<ApiResponse<T>> = await axios({
@@ -97,7 +110,7 @@ async function apiRequest<T>(url: string, method: string, data?: any): Promise<A
       url: apiUrl,
       headers: {
         'Content-Type': 'application/json',
-        // ... outros headers necessários ...
+        'Authorization': `Bearer ${authToken}`,
       },
       data,
     });
@@ -106,14 +119,13 @@ async function apiRequest<T>(url: string, method: string, data?: any): Promise<A
   } catch (error) {
     const axiosError = error as AxiosError<ApiResponse<T>>;
     if (axiosError.response) {
-      throw new Error(axiosError.response.data.message || 'Erro na requisição');
+      throw new Error(axiosError.response.data.message || 'Error in the request');
     } else {
-      console.error('Erro na requisição:', error);
+      console.error('Error in the request:', error);
       throw error;
     }
   }
 }
-
 // Funções específicas para operações da Associates API
 
 // GET /api/v1/associates/{id}
