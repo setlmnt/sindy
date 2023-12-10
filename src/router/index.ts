@@ -49,7 +49,7 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   if (to.matched.some(route => route.meta.requiresAuth)) {
     const isAuthenticatedUser = isAuthenticated();
     if (!isAuthenticatedUser) {
