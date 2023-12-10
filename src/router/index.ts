@@ -4,18 +4,21 @@ import Search from '../pages/Search.vue';
 import Create from '../pages/Create.vue';
 import Monthly from '../pages/Monthly.vue';
 import Login from '../pages/Login.vue';
+import Register from '../pages/Register.vue';
 import { isAuthenticated } from '../services/auth.ts';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: { requiresAuth: true }
   },
   {
     path: '/search',
     name: 'Search',
-    component: Search
+    component: Search,
+    meta: { requiresAuth: true }
   },
   {
     path: '/create',
@@ -28,6 +31,11 @@ const routes: RouteRecordRaw[] = [
     name: 'Monthly',
     component: Monthly,
     meta: { requiresAuth: true }  // Esta rota requer autenticação
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register,
   },
   {
     path: '/login',

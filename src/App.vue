@@ -1,7 +1,7 @@
 <template>
   <div :data-theme="currentTheme" class="flex">
-    <Navbar @theme-toggle="toggleTheme" />
-    <router-view class="ml-24"></router-view>
+    <Navbar v-if="this.$route.path !== '/register' && this.$route.path !== '/login'" @theme-toggle="toggleTheme" />
+    <router-view :class="this.$route.path !== '/login' ? 'ml-24' : ''"></router-view>
   </div>
 </template>
 

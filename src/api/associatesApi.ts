@@ -91,7 +91,7 @@ function getAuthToken(): string | null {
   const tokenCookie = document.cookie
     .split(';')
     .map(cookie => cookie.trim())
-    .find(cookie => cookie.startsWith('jwtToken='));
+    .find(cookie => cookie.startsWith('token='));
 
   if (tokenCookie) {
     return tokenCookie.split('=')[1];

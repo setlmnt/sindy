@@ -54,7 +54,7 @@ async function loginUser(username: string, password: string): Promise<ApiRespons
       // Verificar se a resposta contém o token
       if ( response.token) {
         // Salvar o token JWT em um cookie chamado "jwtToken"
-        document.cookie = `jwtToken=${response.token}; path=/`;
+        document.cookie = `token=${response.token}; path=/;`;
   
         return response;
       } else {
