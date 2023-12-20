@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full px-20">
+    <div class="w-full px-20 min-h-screen">
         <header class="sticky w-full h-28 pt-6 mb-4 flex items-center z-10 top-0 bg-base-100">
             <Searchbar @search="loadData"></Searchbar>
             <div class="dropdown dropdown-bottom">
@@ -37,9 +37,11 @@
                     <tr v-for="person in persons" :key="person.id" @click="showDetails(person)"
                         class="cursor-pointer p-8 border-b-2 border-neutral hover:bg-base-300">
                         <td class="avatar">
-                            <div class="mask mask-squircle w-20 h-20">
-                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                                    alt="Avatar Tailwind CSS Component" />
+                            <div v-if="!photo" class="mask mask-squircle w-20 h-20">
+                                <img :src="`data:${photo.contentType};base64,${photo.archiveName}`" alt="Avatar Tailwind CSS Component" />
+                            </div>
+                            <div v-else class="mask mask-squircle w-16 h-16">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="user"><g data-name="Layer 2"><path fill="#4285f4" d="M13,12.25H11A6.75769,6.75769,0,0,0,4.25,19v1A2.7528,2.7528,0,0,0,7,22.75H17A2.7528,2.7528,0,0,0,19.75,20V19A6.75769,6.75769,0,0,0,13,12.25Z"></path><circle cx="12" cy="6.5" r="5.25" fill="#afcbf9"></circle></g></svg>
                             </div>
                         </td>
                         <td class="">
@@ -55,12 +57,15 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="w-2/5 h-full fixed top-16 right-0 flex items-start justify-center">
+            <div v-if="previewPerson" class="w-2/5 h-full fixed top-16 right-0 flex items-start justify-center">
                 <div class="lg:w-5/6 h-4/5 flex flex-col justify-between mt-16 p-8 bg-base-300 rounded-2xl">
                     <div class="flex h-32 items-center">
-                        <div class="mask mask-squircle w-32 h-32 avatar mr-8">
+                        <div v-if="!photo" class="mask mask-squircle w-32 h-32 avatar mr-8">
                             <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                                 alt="Avatar Tailwind CSS Component" />
+                        </div>
+                        <div v-else class="mask mask-squircle w-28 h-28 avatar mr-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="user"><g data-name="Layer 2"><path fill="#4285f4" d="M13,12.25H11A6.75769,6.75769,0,0,0,4.25,19v1A2.7528,2.7528,0,0,0,7,22.75H17A2.7528,2.7528,0,0,0,19.75,20V19A6.75769,6.75769,0,0,0,13,12.25Z"></path><circle cx="12" cy="6.5" r="5.25" fill="#afcbf9"></circle></g></svg>
                         </div>
                         <div>
                             <h1 class="font-bold text-xl lg:text-2xl mb-2">{{ selectedPerson.name }}</h1>
@@ -79,9 +84,14 @@
                         </div>
                     </div>
                     <div>
-                        <Button class="btn btn-primary mr-8">Expandir</Button>
-                        <Button class="btn btn-secondary btn-outline">Expandir</Button>
+                        <Button class="btn btn-lg btn-primary mr-8" @click="$router.push(`/update/${selectedPerson.id}`)">Expandir</Button>
+                        <Button class="btn btn-lg btn-secondary mr-8" @click="$router.push(`/monthly/${selectedPerson.id}`)">Mensalidade</Button>
                     </div>
+                </div>
+            </div>
+            <div v-else class="w-2/5 h-full fixed top-16 right-0 flex items-start justify-center">
+                <div class="lg:w-5/6 h-4/5 flex flex-col justify-between mt-16 p-8 bg-base-300 rounded-2xl">
+                        <h1 class="font-bold text-xl lg:text-4xl text-center my-auto">selecione uma pessoa</h1>
                 </div>
             </div>
         </main>
@@ -90,7 +100,7 @@
 <script>
 import Searchbar from '../components/Searchbar.vue';
 import Button from '../components/Button.vue';
-import { getAllAssociates } from '../api/associatesApi.ts';
+import { getAllAssociates, getAssociateProfilePictureById } from '../api/associatesApi.ts';
 
 export default {
     name: 'Home',
@@ -101,7 +111,9 @@ export default {
         return {
             isLoading: true,
             persons: [],
+            previewPerson: false,
             selectedPerson: {
+                id: "",
                 name: "",
                 unionCard: "",
                 cpf: "",
@@ -141,14 +153,6 @@ export default {
                     city: "Brumado",
                     state: "BA"
                 },
-                associatePhoto: {
-                    id: "",
-                    archiveName: "",
-                    originalName: "",
-                    contentType: "",
-                    size: 0,
-                    url: ""
-                },
                 workRecord: {
 
                     number: "",
@@ -156,6 +160,13 @@ export default {
                 },
                 isLiterate: true,
                 isVoter: true,
+            },
+            photo: {
+                id: "",
+                archiveName: "",
+                originalName: "",
+                contentType: "",
+                size: 0,
             },
         };
     },
@@ -199,6 +210,7 @@ export default {
         },
         showDetails(person) {
             this.selectedPerson = person;
+            this.previewPerson = true;
         },
     },
 }
