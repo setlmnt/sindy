@@ -2,7 +2,7 @@
   <div class="w-screen h-screen flex justify-between overflow-y-hidden">
     <div class="w-full md:w-2/5 h-screen flex flex-col items-center justify-center mx-auto">
       <h1 class="mb-20 font-bold text-5xl hidden md:block">Bem vindo de volta</h1>
-      <div class="mx-auto w-2/3 bg-base-300 rounded-3xl p-8 flex flex-col justify-between">
+      <div :class="errorLogin ? 'border-2 border-error vibrate' : ''" class="mx-auto w-2/3 bg-base-300 rounded-3xl p-8 flex flex-col justify-between">
         <h2 class="text-4xl font-Cairo leading-7 space-y-5">Sin<br>dy.</h2>
         <form class="w-full my-10" @submit.prevent="login">
           <div class="mb-6">
@@ -43,7 +43,10 @@
           </div>
           <a class="ml-auto link link-primary" href="#">Esqueceu a senha?</a>
         </div>
-        <button class="btn btn-primary font-bold text-xl mt-8" type="submit">Entrar</button>
+        <button class="btn btn-primary font-bold text-xl mt-8" @click="login">
+          <span v-if="!isLoading">Entrar</span>
+          <span v-else class="loading loading-spinner loading-md"></span>
+        </button>
       </div>
       <span class="flex mt-8 font-bold">
         <p class="mr-2">Ainda não possui uma conta?</p>
@@ -61,19 +64,28 @@ import { loginUser } from '../api/authApi.ts';
 export default {
   data() {
     return {
+      isLoading: false,
       username: '',
       password: '',
       passwordVisible: false,
+      errorLogin: false,
     };
   },
   methods: {
     async login() {
+      this.errorLogin = false;
+      this.isLoading = true;
       try {
         const response = await loginUser(this.username, this.password);
         console.log('Login successful:', response.token);
-        this.$router.push('/home');
+        this.$router.push('/');
+        this.errorLogin = false;
       } catch (error) {
         console.error('Login error:', error.message);
+        this.errorLogin = true;
+        this.isLoading = false;
+      } finally {
+        this.isLoading = false;
       }
     },
     toggleVisibility() {
@@ -82,3 +94,25 @@ export default {
   },
 };
 </script>
+
+<style>
+.vibrate {
+      animation: vibrateAnimation 500ms ease-in-out;
+    }
+
+    @keyframes vibrateAnimation {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(-10px);
+      }
+      50% {
+        transform: translateX(10px);
+      }
+      75% {
+        transform: translateX(-10px);
+      }
+    }
+
+</style>
