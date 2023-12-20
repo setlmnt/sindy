@@ -10,16 +10,22 @@
                             class="w-64 p-4 mr-4 border-2 border-dashed border-accent text-center cursor-pointer relative"
                             @dragover.prevent @dragenter="addDragOverClass" @dragleave="removeDragOverClass"
                             @drop="handleDrop">
+
                             <span class="block mb-4 text-lg">Arraste e solte ou:</span>
+
                             <button @click="openFileInput" class="w-full btn btn-primary">Escolher Arquivo</button>
+
                             <button @click="openCamera" class="w-full mt-2 btn btn-secondary">Abrir Câmera</button>
+
                             <div v-if="isCameraActive || selectedImage" class="w-full h-full absolute top-0 left-0">
                                 <img v-if="selectedImage" :src="selectedImage" alt="Imagem Selecionada"
                                     class="w-full h-full object-cover" />
                                 <video v-if="isCameraActive" ref="cameraFeed" class="w-full h-full" autoplay></video>
+
                                 <Button class="btn btn-neutral" @click="captureFromCamera, clearSelection"
                                     v-if="isCameraActive">Capturar</Button>
                             </div>
+
                             <input type="hidden" name="imagem" :value="selectedImage" />
                         </div>
                         <div class="w-full h-full flex flex-col justify-end">
@@ -36,7 +42,7 @@
                                         <span class="label-text">Estado Civil</span>
                                     </label>
                                     <select class="w-full select select-bordered rounded-xl" type="text"
-                                        v-model="form.maritalStatus" required>
+                                        v-model="form.maritalStatusEnum" required>
                                         <option value="NEVER_MARRIED">solteiro</option>
                                         <option value="MARRIED">casado</option>
                                         <option value="DIVORCED">divorciado</option>
@@ -315,6 +321,7 @@ import axios from 'axios';
 import Button from '../components/Button.vue';
 import { ref } from 'vue';
 import { saveAssociate, uploadAssociatePhoto } from '../api/associatesApi.ts'
+import WebCam from 'vue-web-cam';
 
 export default {
     data() {
@@ -323,6 +330,7 @@ export default {
             states: [],
             countries: [],
             form: {
+                id: "",
                 name: "",
                 unionCard: "",
                 cpf: "",
@@ -332,7 +340,7 @@ export default {
                 phone: "",
                 nationality: "Brasil",
                 birthAt: "",
-                maritalStatus: "",
+                maritalStatusEnum: "",
                 associationAt: "",
                 localOfficeId: "",
                 address: {
@@ -361,14 +369,6 @@ export default {
 
                     city: "Brumado",
                     state: "BA"
-                },
-                associatePhoto: {
-                    id: "",
-                    archiveName: "",
-                    originalName: "",
-                    contentType: "",
-                    size: 0,
-                    url: ""
                 },
                 workRecord: {
 
@@ -427,35 +427,28 @@ export default {
         async submitForm() {
             try {
                 const response = await saveAssociate(this.form);
-                this.photo.id = response.id;
-                await this.submitPhoto(); // Wait for the photo upload to complete before proceeding
+                this.photo.id = response.id; // Extraindo o ID do associado da resposta
+                this.uploadPhoto(); // Chamando a função de upload após salvar o associado
                 console.log('Associação salva com sucesso:', response);
             } catch (error) {
                 console.error('Erro ao salvar associado:', error);
             }
         },
 
-        async submitPhoto() {
+        async uploadPhoto() {
             try {
                 const formData = new FormData();
+                formData.append("file", this.selectedImage);
 
-                // Append photo information
-                formData.append('id', this.photo.id.toString());
-                formData.append('archiveName', this.photo.archiveName);
-                formData.append('originalName', this.photo.originalName);
-                formData.append('contentType', this.photo.contentType);
-                formData.append('size', this.photo.size.toString());
+                // Use a resposta de saveAssociate para obter o ID do associado
+                const associateId = this.photo.id;
 
-                // Append the image file
-                formData.append('file', this.selectedImage, 'photo.jpg');
-
-                // Assuming associateId is available in your component
-                const associateId = this.photo.id; // Replace with the actual way you get the associateId
-
-                const response = await uploadAssociatePhoto(associateId, formData);
-                console.log('Foto enviada com sucesso:', response);
+                // Usando then para lidar com a resolução da promessa
+                uploadAssociatePhoto(associateId, formData).then((response) => {
+                    console.log('Foto do associado enviada com sucesso:', response);
+                });
             } catch (error) {
-                console.error('Erro ao enviar foto:', error);
+                console.error('Erro ao enviar foto do associado:', error);
             }
         },
         gerarDataAtual() {
@@ -645,21 +638,24 @@ export default {
             }
         },
         captureFromCamera() {
-            const canvas = document.createElement('canvas');
-            canvas.width = this.$refs.cameraFeed.videoWidth;
-            canvas.height = this.$refs.cameraFeed.videoHeight;
-            const context = canvas.getContext('2d');
-            context.drawImage(this.$refs.cameraFeed, 0, 0, canvas.width, canvas.height);
+            if (this.isCameraActive) {
+                const canvas = document.createElement('canvas');
+                canvas.width = this.$refs.cameraFeed.videoWidth;
+                canvas.height = this.$refs.cameraFeed.videoHeight;
+                const context = canvas.getContext('2d');
+                context.drawImage(this.$refs.cameraFeed, 0, 0, canvas.width, canvas.height);
 
-            // Converta a imagem para um formato base64 ou qualquer outra manipulação necessária
-            const capturedImage = canvas.toDataURL('image/jpeg');
+                // Converta a imagem para um formato base64 ou qualquer outra manipulação necessária
+                const capturedImage = canvas.toDataURL('image/jpeg');
 
-            // Faça o que for necessário com a imagem capturada, por exemplo, atribua à variável selectedImage
-            this.selectedImage = capturedImage;
+                // Faça o que for necessário com a imagem capturada, por exemplo, atribua à variável selectedImage
+                this.selectedImage = capturedImage;
 
-            // Desative a transmissão da câmera
-            this.isCameraActive = false;
+                // Desative a transmissão da câmera
+                this.isCameraActive = false;
+            }
         },
+
         clearSelection() {
             this.selectedImage = null;
         },
