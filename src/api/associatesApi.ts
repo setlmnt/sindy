@@ -52,6 +52,12 @@ interface WorkRecord {
   series: string;
 }
 
+interface DocumentType {
+  id: number;
+  name: string;
+  content: string;
+}
+
 interface Associate {
   id: number;
   name: string;
@@ -65,7 +71,7 @@ interface Associate {
   birthAt: string;
   isLiterate: boolean;
   isVoter: boolean;
-  maritalStatus: string;
+  maritalStatusEnum: string;
   associationAt: string;
   deleted: boolean;
   localOffice: LocalOffice;
@@ -85,7 +91,7 @@ interface ApiResponse<T> {
   data?: T;
 }
 
-const API_BASE_URL = 'https://educampo.onrender.com/api/v1/associates';
+const API_BASE_URL = 'https://sindy-backend-6b4fc1002f6c.herokuapp.com/api/v1/associates';
 
 function getAuthToken(): string | null {
   const tokenCookie = document.cookie
@@ -126,6 +132,7 @@ async function apiRequest<T>(url: string, method: string, data?: any): Promise<A
     }
   }
 }
+
 // Funções específicas para operações da Associates API
 
 // GET /api/v1/associates/{id}
@@ -165,30 +172,49 @@ async function getAllAssociates(searchText?: string): Promise<ApiResponse<Associ
   return apiRequest<Associate[]>(queryString, 'GET');
 }
 
-
 // POST /api/v1/associates
 async function saveAssociate(data: any): Promise<ApiResponse<Associate>> {
   return apiRequest<Associate>('', 'POST', data);
 }
 
-// GET /api/v1/associates/{associateId}/photos
-async function getAssociatePhotoById(associateId: number): Promise<ApiResponse<AssociatePhoto>> {
-  return apiRequest<AssociatePhoto>(`/${associateId}/photos`, 'GET');
+// GET /api/v1/associates/{associateId}/profile-picture
+async function getAssociateProfilePictureById(associateId: number): Promise<ApiResponse<AssociatePhoto>> {
+  return apiRequest<AssociatePhoto>(`/${associateId}/profile-picture`, 'GET');
 }
 
-// POST /api/v1/associates/{associateId}/photos
+// POST /api/v1/associates/{associateId}/profile-picture
 async function uploadAssociatePhoto(associateId: number, data: any): Promise<ApiResponse<AssociatePhoto>> {
-  return apiRequest<AssociatePhoto>(`/${associateId}/photos`, 'POST', data);
+  return apiRequest<AssociatePhoto>(`/${associateId}/profile-picture`, 'POST', data);
 }
 
-// DELETE /api/v1/associates/{associateId}/photos
+// DELETE /api/v1/associates/{associateId}/profile-picture
 async function deleteAssociatePhoto(associateId: number): Promise<ApiResponse<void>> {
-  return apiRequest<void>(`/${associateId}/photos`, 'DELETE');
+  return apiRequest<void>(`/${associateId}/profile-picture`, 'DELETE');
+}
+
+// GET /api/v1/associates/{associateId}/documents
+async function getAssociateDocumentById(associateId: number, documentId: number): Promise<ApiResponse<DocumentType>> {
+  return apiRequest<DocumentType>(`/${associateId}/documents/${documentId}`, 'GET');
+}
+
+// POST /api/v1/associates/{associateId}/documents
+async function uploadAssociateDocument(associateId: number, data: any): Promise<ApiResponse<DocumentType>> {
+  return apiRequest<DocumentType>(`/${associateId}/documents`, 'POST', data);
+}
+
+// DELETE /api/v1/associates/{associateId}/documents/{documentId}
+async function deleteAssociateDocumentById(associateId: number, documentId: number): Promise<ApiResponse<void>> {
+  return apiRequest<void>(`/${associateId}/documents/${documentId}`, 'DELETE');
 }
 
 // GET /api/v1/associates/{id}/export/pdf
 async function exportAssociateToPdf(id: number): Promise<ApiResponse<void>> {
   return apiRequest<void>(`/${id}/export/pdf`, 'GET');
+}
+
+// GET /api/v1/associates/birthdays
+async function getAllBirthdayAssociates(): Promise<ApiResponse<Associate[]>> {
+  return apiRequest<Associate[]>('/birthdays', 'GET');
 }
 
 // GET /api/v1/associates/photos
@@ -209,10 +235,14 @@ export {
   deleteAssociate,
   getAllAssociates,
   saveAssociate,
-  getAssociatePhotoById,
+  getAssociateProfilePictureById,
   uploadAssociatePhoto,
   deleteAssociatePhoto,
+  getAssociateDocumentById,
+  uploadAssociateDocument,
+  deleteAssociateDocumentById,
   exportAssociateToPdf,
+  getAllBirthdayAssociates,
   getAllAssociatesPhotos,
   getAssociatePhoto
 };

@@ -1,7 +1,9 @@
-import Cookies from 'js-cookie';
+import * as cookie from 'cookie';
 
 export function isAuthenticated(): boolean {
-  const token = Cookies.get('jwtToken');
+  const cookies = cookie.parse(document.cookie);
+  const token = cookies.token;
+
   if (token) {
     return true;
   } else {

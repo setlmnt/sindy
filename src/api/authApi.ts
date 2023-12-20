@@ -9,7 +9,7 @@ interface ApiResponse<T> {
   token?: string;
 }
 
-const API_BASE_URL = 'https://educampo.onrender.com/api/v1/users/auth';
+const API_BASE_URL = 'https://sindy-backend-6b4fc1002f6c.herokuapp.com/api/v1/users/auth';
 
 async function apiRequest<T>(url: string, method: string, data?: any): Promise<ApiResponse<T>> {
   const apiUrl = `${API_BASE_URL}${url}`;

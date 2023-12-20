@@ -2,7 +2,9 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Home from '../pages/Home.vue';
 import Search from '../pages/Search.vue';
 import Create from '../pages/Create.vue';
+import Update from '../pages/Update.vue';
 import Monthly from '../pages/Monthly.vue';
+import MonthlyById from '../pages/MonthlyById.vue';
 import Login from '../pages/Login.vue';
 import Register from '../pages/Register.vue';
 import { isAuthenticated } from '../services/auth.ts';
@@ -26,11 +28,23 @@ const routes: RouteRecordRaw[] = [
     component: Create,
     meta: { requiresAuth: true }  // Esta rota requer autenticação
   },
+{
+  path: '/update/:id',
+  name: 'Update',
+  component: Update,
+  meta: { requiresAuth: true }
+},
   {
     path: '/monthly',
     name: 'Monthly',
     component: Monthly,
     meta: { requiresAuth: true }  // Esta rota requer autenticação
+  },
+  {
+    path: '/monthly/:id',
+    name: 'MonthlyById',
+    component: MonthlyById,
+    meta: { requiresAuth: true }
   },
   {
     path: '/register',
