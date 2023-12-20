@@ -2,18 +2,18 @@
   <div class="w-screen h-screen flex justify-between overflow-y-hidden">
     <div class="w-full md:w-2/5 h-screen flex flex-col items-center justify-center mx-auto">
       <h1 class="mb-20 font-bold text-5xl hidden md:block">Registre-se</h1>
-      <div class="mx-auto w-2/3 bg-base-300 rounded-3xl p-8 flex flex-col justify-between">
+      <div :class="errorLogin ? 'border-2 border-error vibrate' : ''" class="mx-auto w-2/3 bg-base-300 rounded-3xl p-8 flex flex-col justify-between">
         <h2 class="text-4xl font-Cairo leading-7 space-y-5">Sin<br>dy.</h2>
-        <form class="w-full my-10" @submit.prevent="login">
+        <form class="w-full my-10">
           <div class="mb-6">
-            <label class="label text-xl font-bold" for="username">Usuário</label>
+            <label class="label text-xl font-bold">Usuário</label>
             <input class="input focus:input-primary w-full placeholder-white/25" type="text"
               placeholder="Informe seu usuário" id="username" v-model="username" required />
           </div>
           <div class="mb-6">
-            <label class="label text-xl font-bold" for="username">Email</label>
+            <label class="label text-xl font-bold">Email</label>
             <input class="input focus:input-primary w-full placeholder-white/25" type="email"
-              placeholder="Informe seu email" id="username" v-model="email" required />
+              placeholder="Informe seu email" id="email" v-model="email" required />
           </div>
           <div>
             <div class="label">
@@ -43,8 +43,15 @@
             <label class="label text-lg" for="remember">Lembrar-me</label>
           </div>
         </div>
-        <button class="btn btn-primary font-bold text-xl mt-8" type="submit">Registrar-se</button>
+        <button class="btn btn-primary font-bold text-xl mt-8" @click="login">
+          <span v-if="!isLoading">Registre-se</span>
+          <span v-else class="loading loading-spinner loading-md"></span>
+        </button>
       </div>
+      <span class="flex mt-8 font-bold">
+        <p class="mr-2">Já possui uma conta?</p>
+        <a class="ml-auto text-primary" href="/login">Fazer Login</a>
+      </span>
       <p class="absolute bottom-8 left-8 font-bold text-white/30"> © {{ new Date().getFullYear() }} Setlmnt, Coletive.</p>
     </div>
     <img class="h-screen hidden md:block" src="../assets/imgs/backgrounds/login.svg" alt="">
@@ -52,24 +59,32 @@
 </template>
   
 <script>
-import { loginUser } from '../api/authApi.ts';
+import { registerUser } from '../api/authApi.ts';
 export default {
   data() {
     return {
+      isLoading: false,
       username: '',
-      password: '',
       email: '',
+      password: '',
       passwordVisible: false,
+      errorRegister: false,
     };
   },
   methods: {
     async login() {
+      this.errorRegister = false;
+      this.isLoading = true;
       try {
-        const response = await registerUser(this.username, this.password, this.email);
+        const response = await registerUser(this.username, this.email, this.password);
         console.log('Login successful:', response.token);
         this.$router.push('/home');
       } catch (error) {
         console.error('Login error:', error.message);
+        this.errorRegister = true;
+        this.isLoading = false;
+      } finally {
+        this.isLoading = false;
       }
     },
     toggleVisibility() {
@@ -78,3 +93,25 @@ export default {
   },
 };
 </script>
+
+<style>
+.vibrate {
+      animation: vibrateAnimation 500ms ease-in-out;
+    }
+
+    @keyframes vibrateAnimation {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(-5px);
+      }
+      50% {
+        transform: translateX(5px);
+      }
+      75% {
+        transform: translateX(-5px);
+      }
+    }
+
+</style>
